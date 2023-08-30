@@ -1,0 +1,36 @@
+#!/bin/bash
+
+echo -e "\n$0\n"
+
+cd /
+
+chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/*
+chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd/*
+chmod u+w ./home/jjchkconn/.config/uSysIntChkd/
+
+chmod 444 ./home/jjchkconn/.config/systemd/user/*
+chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user/*
+
+ssh jjchkconn@localhost systemctl --user list-unit-files "jj*" || true
+
+ssh jjchkconn@localhost systemctl --user enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
+ssh jjchkconn@localhost systemctl --user start jjchkconn-uSysIntChkd@jjchkconn.service  || true
+
+ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.path || true
+ssh jjchkconn@localhost systemctl --user start  jjchkconn-alerts-send@jjchkconn.path || true
+
+ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.service || true
+ssh jjchkconn@localhost systemctl --user start jjchkconn-alerts-send@jjchkconn.service || true
+
+# Append to /etc/aliases
+cat << EOF >> /etc/aliases
+jjchkconn: /home/jjchkconn/alerts/inbound-alerts
+alerts: /home/jjchkconn/alerts/inbound-alerts 
+EOF
+
+# Update aliases database
+newaliases
+
+echo -e "\n\nREMEMBER TO CUSTOMIZE YOUR SLACK WEBHOOKS PARAMETER."
+echo -e "\nIT IS NOT CONFIGURED RIGHT NOW.\n"
+echo -e "\nInstallation is complete.\n"

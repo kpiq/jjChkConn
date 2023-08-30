@@ -1,0 +1,65 @@
+#!/bin/bash
+
+echo -e "\n$0\n"
+
+addgroup jjchkconn
+
+adduser --disabled-password --shell /bin/bash --home /home/jjchkconn --ingroup jjchkconn --gecos '' jjchkconn
+
+usermod -aG cdrom,plugdev jjchkconn
+
+whoami
+export ROOTPUB=`cat /root/.ssh/*.pub`
+su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ~/.ssh/id_ed25519'
+su -l jjchkconn -c 'touch ~/.ssh/authorized_keys'
+su -l jjchkconn -c 'chmod 600 ~/.ssh/authorized_keys'
+su -l jjchkconn -c "echo $ROOTPUB >> ~/.ssh/authorized_keys"
+
+sleep 1
+
+cd /
+
+if [ ! -d ./home/jjchkconn/.config/systemd ];
+then
+   mkdir -p ./home/jjchkconn/.config/systemd
+   chmod 755 ./home/jjchkconn/.config/systemd
+   chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd
+   chown jjchkconn:jjchkconn ./home/jjchkconn/.config
+fi
+
+if [ ! -d ./home/jjchkconn/.config ];
+then
+   mkdir -p ./home/jjchkconn/.config
+   chmod 700 ./home/jjchkconn/.config
+   chown jjchkconn:jjchkconn ./home/jjchkconn/.config
+fi
+
+if [ ! -d ./home/jjchkconn/.config/systemd/user ];
+then
+   mkdir -p ./home/jjchkconn/.config/systemd/user
+   chmod 750 ./home/jjchkconn/.config/systemd/user
+   chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user
+fi
+
+mkdir -p ./home/jjchkconn/.config/uSysIntChkd
+chmod 750 ./home/jjchkconn/.config/uSysIntChkd
+chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd
+
+mkdir -p ./home/jjchkconn/alerts
+chmod 755 ./home/jjchkconn/alerts
+chown jjchkconn:jjchkconn ./home/jjchkconn/alerts
+
+if [ ! -d ./usr/local/u/bin ];
+then
+   mkdir -p ./usr/local/u/bin
+   chown -R root:root ./usr/local/u
+   chmod -R  755 ./usr/local/u
+fi
+
+ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
+
+if [ ! -s ${ALERTSINI} ];
+then
+   echo 'WebHook=https://hooks.slack.com/services/' > ${ALERTSINI}
+fi
+chmod 700 ${ALERTSINI}

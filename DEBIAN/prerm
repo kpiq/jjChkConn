@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo -e "\n$0\n"
+
+### TEMPORARILY STOP HERE. NEED TO DEBUG WHY SYSTEMCTL --USER FAILS.
+
+ssh jjchkconn@localhost systemctl --user status "jj*" || true
+
+#exit 0
+
+ssh jjchkconn@localhost systemctl --user stop jjchkconn-uSysIntChkd@jjchkconn.serviceg || true
+ssh jjchkconn@localhost systemctl --user disable jjchkconn-uSysIntChkd@jjchkconn.service || true
+
+ssh jjchkconn@localhost systemctl --user stop jjchkconn-alerts-send@jjchkconn.pathg || true
+ssh jjchkconn@localhost systemctl --user disable jjchkconn-alerts-send@jjchkconn.pathg || true
+
+ssh jjchkconn@localhost systemctl --user stop jjchkconn-alerts-send@jjchkconn.serviceg || true
+ssh jjchkconn@localhost systemctl --user disable jjchkconn-alerts-send@jjchkconn.serviceg || true
+
+sleep 1
