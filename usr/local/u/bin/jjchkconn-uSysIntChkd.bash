@@ -13,7 +13,10 @@ exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()
 {
-   rm $pidfile
+   if [ -f ${pidfile} ];
+   then
+      rm ${pidfile}
+   fi
    exit 0
 }
 
@@ -43,7 +46,10 @@ function fInit()
    fi
    
    ### Clean output file before starting execution
-   rm $uOut 2> /dev/null
+   if [ -f ${uOut} ];
+   then
+      rm ${uOut} 2> /dev/null
+   fi
 
    # Save the total number of lines on the steps_file, as an integer.
    declare -g num_steps=$(awk 'END {print int($1)}' "$steps_file")
