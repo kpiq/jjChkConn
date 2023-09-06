@@ -4,6 +4,15 @@ echo -e "\n$0\n"
 
 cd /
 
+if [ ! -d ./usr/local/u/bin ];
+then
+   echo "$0: Abort.  " `realpath ./usr/local/u/bin`" does not exist"
+   exit 1
+else
+   chown -R jjchkconn:jjchkconn ./usr/local/u/bin/jjchkconn*
+   chmod -R  550 ./usr/local/u/bin/jjchkconn*
+fi
+
 chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/*
 chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd/*
 chmod u+w ./home/jjchkconn/.config/uSysIntChkd/

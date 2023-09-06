@@ -53,7 +53,7 @@ if [ ! -d ./usr/local/u/bin ];
 then
    mkdir -p ./usr/local/u/bin
    chown -R root:root ./usr/local/u
-   chmod -R  550 ./usr/local/u
+   chmod -R  775 ./usr/local/u
 fi
 
 ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
