@@ -2,6 +2,7 @@ wget -o - http://209-107-204-129.mia.as54203.net:8080
 wget -O - http://speedtestfl.gethotwired.com:8080
 wget -O - http://clients3.google.com/generate_204
 wget -O - http://server-12215.prod.hosts.ooklaserver.net:8080
+wget -O - https://fireoscaptiveportal.com/generate_204
 wget -O - http://tigobo.ecatel.us:8080
 wget -O - http://www.msftncsi.com/ncsi.txt
 wget -O - http://speedtest.opticaltel.com:8080
@@ -22,3 +23,4 @@ wget -O - http://speedtest01.open5g.com:8080
 wget -O - http://speedtest.tekify.com:8080
 ping -c 1 -s 1 speedtest.criticalhub.com
 wget -O - http://google.com/generate_204
+wget -O - http://mini5.opera-mini.net/generate_204
