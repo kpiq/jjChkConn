@@ -28,8 +28,11 @@ ssh jjchkconn@localhost systemctl --user start jjchkconn-uSysIntChkd@jjchkconn.s
 ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.path || true
 ssh jjchkconn@localhost systemctl --user start  jjchkconn-alerts-send@jjchkconn.path || true
 
-ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.service || true
-ssh jjchkconn@localhost systemctl --user start jjchkconn-alerts-send@jjchkconn.service || true
+
+### DON'T ENABLE OR START THIS SERVICE.  IT WILL BE TRIGGERED 
+### ONLY BY ITS CORRESPONDING .PATH UNIT.
+#ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.service || true
+#ssh jjchkconn@localhost systemctl --user start jjchkconn-alerts-send@jjchkconn.service || true
 
 # Append to /etc/aliases
 cat << EOF >> /etc/aliases
