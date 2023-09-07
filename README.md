@@ -1,5 +1,7 @@
 jjchkconn
 
+v1.1 - modified and tested on September 6, 2023 - is ready for live use!  
+
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
 About
@@ -8,7 +10,11 @@ jjchkconn is a set of customizable systemd units, ini files, and bash scripts th
 
 Disclaimer
 
-jjchkconn was converted from a number of standalone scripts and systemd units into one integrated package.  It is also meant to take email messages to the alerts@localhost and generate Slack alerts out of those.  That piece is not operational yet.
+jjchkconn was converted from a number of standalone scripts and systemd units into one integrated package.  It is also meant to take email messages to the alerts@localhost and generate Slack alerts out of those.
+
+Build:
+
+cd source_directory; dpkg-deb --build . jjchkconn.deb
 
 Installation:
 
@@ -16,7 +22,7 @@ All components have been packaged in a .deb(ian) package and are ready for insta
 
 dpkg -i jjchkconn.deb
 
-Permissions and ownership are ready for action.  The Slack webhooks ini file, the alerts ini file, and enabling and starting Systed units must be done manually.
+Permissions and ownership are ready for action.  The Slack webhooks ini file must be changed manually.  Insert the Slack incoming webhook URL as stated below.
 
 Configurations
 
@@ -29,7 +35,7 @@ jjchkconn-uSysIntChkd.ini file requires manual configuration.
 jjchkconn-uSysIntChkd.steps file requires manual configuration.  Running speedtest-cli can be used to customize the various URLs that can be used with wget to test connectivity.  With more entries the frequency of wget or ping will decrease and the owners of the sites used may ignore.  With less entries the frequency will be higher, you'll be more noticeable and the risk of blocking you increases.
 
 
-jjchkconn-uSysIntChkd.next file requires manual configuration, although always starting with the number 1 is very safe.
+jjchkconn-uSysIntChkd.next file does not require manual configuration anymore, although always starting with the number 1 is very safe.
 
 Thank for your support!   
 
