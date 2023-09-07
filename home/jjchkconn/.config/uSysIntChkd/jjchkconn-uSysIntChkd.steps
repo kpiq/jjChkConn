@@ -6,18 +6,18 @@ wget -O - http://tigobo.ecatel.us:8080
 wget -O - http://www.msftncsi.com/ncsi.txt
 wget -O - http://speedtest.opticaltel.com:8080
 wget -O - http://208.89.99.246:8080
-ping -c 1 connectivitycheck.gstatic.com
+ping -c 1 -s 1 connectivitycheck.gstatic.com
 wget -O - http://speedtest-200p.wavebroadband.com:8080
 wget -O - http://speedtest.fastmetrics.com:8080
 wget -O - http://www.msftconnecttest.com/connecttest.txt
 wget -O - http://sfosfookla.wiline.com:8080
 wget -O - http://ookla.unwiredltd.com:8080
-ping -c 1 connectivitycheck.android.com
+ping -c 1 -s 1 connectivitycheck.android.com
 wget -O - http://stosat-scla-01.sys.comcast.net:8080
 wget -O - http://sf-speedtest.race.com:8080
-ping -c 1 speedtest.att.com
+ping -c 1 -s 1 speedtest.att.com
 wget -O - http://turo.pigscanfly.ca:8080
 wget -O - http://speed.juhsd.net:8080
 wget -O - http://speedtest01.open5g.com:8080
 wget -O - http://speedtest.tekify.com:8080
-ping -c 1 speedtest.criticalhub.com
+ping -c 1 -s 1 speedtest.criticalhub.com
