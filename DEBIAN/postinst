@@ -43,6 +43,9 @@ EOF
 # Update aliases database
 newaliases
 
-echo -e "\n\nREMEMBER TO CUSTOMIZE YOUR SLACK WEBHOOKS PARAMETER."
+ssh jjchkconn@localhost systemctl --user status "jj*" || true
+
+echo -e "\n\nREMEMBER TO CUSTOMIZE YOUR SLACK WEBHOOKS PARAMETER IN THE .INI FILE."
 echo -e "\nIT IS NOT CONFIGURED RIGHT NOW.\n"
+echo -e "\n\nALSO, VERIFY THE .NEXT AND .STEPS FILES."
 echo -e "\nInstallation is complete.\n"
