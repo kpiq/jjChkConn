@@ -1,5 +1,5 @@
 [Unit]
-Description=jj10ChkConn-uSysIntChkd.service - User-defined service to monitor Internet connectivity
+Description=jjchkconn-uSysIntChkd@%i.service - User-defined service to monitor Internet connectivity
 After=network.target
 
 [Service]
