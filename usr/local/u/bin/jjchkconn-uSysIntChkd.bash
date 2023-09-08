@@ -37,6 +37,12 @@ function fCleanup()
       rm ${pidfile}
    fi
 
+   echo "$0: Listing all function names in the FUNCNAME array";
+   # List all function names in FUNCNAME array
+   for func in "${FUNCNAME[@]}"; do
+     echo "$func"
+   done
+
    exit ${uRC}
 }
 
