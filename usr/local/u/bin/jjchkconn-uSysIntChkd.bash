@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "$0: User=$1"
 declare -g uUser=jjchkconn
 exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 

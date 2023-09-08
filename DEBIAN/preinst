@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /
+
 echo -e "\n$0\n"
 
 addgroup jjchkconn
@@ -7,6 +9,8 @@ addgroup jjchkconn
 adduser --disabled-password --shell /bin/bash --home /home/jjchkconn --ingroup jjchkconn --gecos '' jjchkconn
 
 usermod -aG cdrom,plugdev jjchkconn
+
+id jjchkconn
 
 while [ ! -d ./home/jjchkconn ]
 do
@@ -26,8 +30,6 @@ su -l jjchkconn -c 'chmod 600 ~/.ssh/authorized_keys'
 su -l jjchkconn -c "echo $ROOTPUB >> ~/.ssh/authorized_keys"
 
 sleep 1
-
-cd /
 
 if [ ! -d ./home/jjchkconn/.config ];
 then
