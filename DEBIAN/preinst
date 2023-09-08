@@ -8,9 +8,19 @@ adduser --disabled-password --shell /bin/bash --home /home/jjchkconn --ingroup j
 
 usermod -aG cdrom,plugdev jjchkconn
 
+while [ ! -d ./home/jjchkconn ]
+do
+  sleep 1
+done
+
 whoami
 export ROOTPUB=`cat /root/.ssh/*.pub`
 su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ~/.ssh/id_ed25519'
+while [ ! -d ./home/jjchkconn/.ssh ]
+do
+  sleep 1
+done
+
 su -l jjchkconn -c 'touch ~/.ssh/authorized_keys'
 su -l jjchkconn -c 'chmod 600 ~/.ssh/authorized_keys'
 su -l jjchkconn -c "echo $ROOTPUB >> ~/.ssh/authorized_keys"
@@ -19,39 +29,40 @@ sleep 1
 
 cd /
 
-#if [ ! -d ./home/jjchkconn/.config/systemd ];
-#then
-   #mkdir -p ./home/jjchkconn/.config/systemd
-   #chmod 755 ./home/jjchkconn/.config/systemd
-   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd
-   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config
-#fi
-
 if [ ! -d ./home/jjchkconn/.config ];
 then
-   mkdir -p ./home/jjchkconn/.config
+   mkdir -p     ./home/jjchkconn/.config
+   while [ ! -d ./home/jjchkconn/.config ]
+   do
+     sleep 1
+   done
    chmod 700 ./home/jjchkconn/.config
    chown jjchkconn:jjchkconn ./home/jjchkconn/.config
 fi
 
-#if [ ! -d ./home/jjchkconn/.config/systemd/user ];
-#then
-   #mkdir -p ./home/jjchkconn/.config/systemd/user
-   #chmod 750 ./home/jjchkconn/.config/systemd/user
-   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user
-#fi
-
-mkdir -p ./home/jjchkconn/.config/uSysIntChkd
+mkdir -p     ./home/jjchkconn/.config/uSysIntChkd
+while [ ! -d ./home/jjchkconn/.config/uSysIntChkd ]
+do
+  sleep 1
+done
 chmod 750 ./home/jjchkconn/.config/uSysIntChkd
 chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd
 
-mkdir -p ./home/jjchkconn/alerts
+mkdir -p     ./home/jjchkconn/alerts
+while [ ! -d ./home/jjchkconn/alerts ]
+do
+  sleep 1
+done
 chmod 755 ./home/jjchkconn/alerts
 chown jjchkconn:jjchkconn ./home/jjchkconn/alerts
 
 if [ ! -d ./usr/local/u/bin ];
 then
-   mkdir -p ./usr/local/u/bin
+   mkdir -p     ./usr/local/u/bin
+   while [ ! -d ./usr/local/u/bin ]
+   do
+     sleep 1
+   done
    chown -R root:root ./usr/local/u
    chmod -R  775 ./usr/local/u
 fi

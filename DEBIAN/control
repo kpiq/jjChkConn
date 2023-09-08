@@ -3,4 +3,4 @@ Version: 1.2
 Maintainer: Pedro Serrano <dev@jj10.net>
 Architecture: amd64
 Description: Monitor Internet connectivity using various/flexible methods.
-Depends: jq, postfix, curl, apparmor-utils
+Depends: jq, postfix, curl

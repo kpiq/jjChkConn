@@ -9,7 +9,7 @@ systemctl status -a "jj*" || true
 
 #exit 0
 
-systemctl stop jjchkconn-uSysIntChkd@jjchkconn.serviceg || true
+systemctl stop jjchkconn-uSysIntChkd@jjchkconn.service || true
 systemctl disable jjchkconn-uSysIntChkd@jjchkconn.service || true
 #ssh jjchkconn@localhost systemctl --user stop jjchkconn-uSysIntChkd@jjchkconn.serviceg || true
 #ssh jjchkconn@localhost systemctl --user disable jjchkconn-uSysIntChkd@jjchkconn.service || true
