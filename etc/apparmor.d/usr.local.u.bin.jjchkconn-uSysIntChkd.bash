@@ -1,4 +1,4 @@
-# Last Modified: Fri Sep  8 14:34:49 2023
+# Last Modified: Fri Sep  8 18:58:59 2023
 abi <abi/3.0>,
 
 include <tunables/global>
@@ -16,5 +16,7 @@ include <tunables/global>
   /usr/bin/sed mrix,
   /usr/local/u/bin/jjchkconn-uSysIntChkd.bash r,
   /{,var/}run/** mrwk,
+  owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.ini r,
+  owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.log w,
 
 }
