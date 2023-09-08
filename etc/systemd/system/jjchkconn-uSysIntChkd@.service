@@ -1,0 +1,13 @@
+[Unit]
+Description=jjchkconn-uSysIntChkd@%i.service - User-defined service to monitor Internet connectivity
+After=network-online.target
+
+[Service]
+User=%i
+Group=%i
+Type=simple
+ExecStart=/usr/local/u/bin/jjchkconn-uSysIntChkd.bash
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
