@@ -1,6 +1,6 @@
 jjchkconn
 
-v1.2.1 - modified and tested on September 8, 2023 - Major changes to run everything in the systemd global context as a non-privileged user. The integrated script finally runs! Testing under way. 
+v1.2.1 - Modified on September 8, 2023 - Major changes to run everything in the systemd global context as a non-privileged user. The integrated script finally runs! Testing under way. 
 
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
