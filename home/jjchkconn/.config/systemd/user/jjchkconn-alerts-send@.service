@@ -1,8 +1,0 @@
-[Unit] 
-Description="Run script to send alerts to slack.com"
-
-[Service]
-ExecStart=bash /usr/local/u/bin/jjchkconn-fetch-alerts-and-send.bash
-
-[Install]
-#WantedBy=default.target

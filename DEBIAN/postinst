@@ -13,20 +13,27 @@ else
    chmod -R  550 ./usr/local/u/bin/jjchkconn*
 fi
 
-chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/*
+#chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/*
 chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd/*
 chmod u+w ./home/jjchkconn/.config/uSysIntChkd/
 
-chmod 444 ./home/jjchkconn/.config/systemd/user/*
-chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user/*
+#chmod 444 ./home/jjchkconn/.config/systemd/user/*
+#chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user/*
 
-ssh jjchkconn@localhost systemctl --user list-unit-files "jj*" || true
+systemctl daemon-reload
 
-ssh jjchkconn@localhost systemctl --user enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
-ssh jjchkconn@localhost systemctl --user start jjchkconn-uSysIntChkd@jjchkconn.service  || true
+systemctl list-unit-files "jj*" || true
+#ssh jjchkconn@localhost systemctl --user list-unit-files "jj*" || true
 
-ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.path || true
-ssh jjchkconn@localhost systemctl --user start  jjchkconn-alerts-send@jjchkconn.path || true
+systemctl enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
+systemctl start jjchkconn-uSysIntChkd@jjchkconn.service  || true
+#ssh jjchkconn@localhost systemctl --user enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
+#ssh jjchkconn@localhost systemctl --user start jjchkconn-uSysIntChkd@jjchkconn.service  || true
+
+systemctl enable jjchkconn-alerts-send@jjchkconn.path || true
+systemctl start  jjchkconn-alerts-send@jjchkconn.path || true
+#ssh jjchkconn@localhost systemctl --user enable jjchkconn-alerts-send@jjchkconn.path || true
+#ssh jjchkconn@localhost systemctl --user start  jjchkconn-alerts-send@jjchkconn.path || true
 
 
 ### DON'T ENABLE OR START THIS SERVICE.  IT WILL BE TRIGGERED 
@@ -43,7 +50,8 @@ EOF
 # Update aliases database
 newaliases
 
-ssh jjchkconn@localhost systemctl --user status "jj*" || true
+systemctl status -a "jj*" || true
+#ssh jjchkconn@localhost systemctl --user status "jj*" || true
 
 echo -e "\n\nREMEMBER TO CUSTOMIZE YOUR SLACK WEBHOOKS PARAMETER IN THE .INI FILE."
 echo -e "\nIT IS NOT CONFIGURED RIGHT NOW.\n"

@@ -1,6 +1,6 @@
 Package: jjchkconn
-Version: 1.0
+Version: 1.2
 Maintainer: Pedro Serrano <dev@jj10.net>
 Architecture: amd64
 Description: Monitor Internet connectivity using various/flexible methods.
-Depends: jq, postfix, curl
+Depends: jq, postfix, curl, apparmor-utils

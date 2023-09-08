@@ -1,6 +1,7 @@
 #!/bin/bash
 
-exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uUser=jjchkconn
+exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 # Set the lock file name
 ALERTSUSER=$(whoami)
@@ -44,7 +45,7 @@ else
 fi
 
 ### SEND ALERTS TO SLACK
-/usr/local/u/bin/jjchkconn-send-alerts2slack.bash ${ALERTSUSER} "`cat ${ALERTSFILE}`"
+/usr/local/u/bin/${uUser}-send-alerts2slack.bash ${ALERTSUSER} "`cat ${ALERTSFILE}`"
 if [ $? -ne 0 ]; then
    echo "$0.  Failed to send alert to Slack.  Abort..."
 else

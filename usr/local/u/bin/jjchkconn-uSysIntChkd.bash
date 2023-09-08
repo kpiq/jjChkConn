@@ -1,13 +1,14 @@
 #!/bin/bash
 
-exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uUser=jjchkconn
+exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR
 ### Created: June 23, 2023
-### Updated: September 7, 2023
+### Updated: September 8, 2023
 ### bash script to daemonize the Internet Connectivity Check
 ### Used as the ExecStart= parameter of the uSysIntChkd@.service
-### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE IN THE --user SYSTEMD CONTEXT.
+### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE AS USER ${uUser}.
 ### USAGE: scriptname
 
 ### Define fCleanup before using it in the trap statement.
@@ -53,14 +54,17 @@ trap fCleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM SIGSTOP SIGXCPU SIGX
 ############### FUNCTION DEFINITIONS: BEGIN ###############
 function fInit() 
 {
-   cd ~/.config/uSysIntChkd
+   ### User runtime directory
+   declare -g dir=~${uUser}/.config/uSysIntChkd
+
+   if [ ! -d ${dir}  ]; then
+       echo "$0: Abort.  User runtime directory ${dir} does not exist."
+       exit 1
+   else
+       cd ${dir}
+   fi
 
    source ./`basename ${0:0:-5}`.ini $0
-   
-   if [ ! -d $dir ]; then
-       echo "$0: Abort.  User runtime directory $dir does not exist."
-       exit 1
-   fi
 
    if [ ${#procs[@]} -gt 1 ]; then
 	   echo "Daemon already running (${#procs[@]})"
@@ -169,7 +173,7 @@ function fSendAlert()
       ### Connectivity has returned.   Send the alert
       uConnStat=up
       sleep $uPingWait;
-      source /usr/local/u/bin/jjchkconn-send-alerts2slack.bash $(whoami) "`hostname` $0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
+      source /usr/local/u/bin/${uUser}-send-alerts2slack.bash $(whoami) "`hostname` $0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
    fi
 }
 

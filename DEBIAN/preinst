@@ -19,13 +19,13 @@ sleep 1
 
 cd /
 
-if [ ! -d ./home/jjchkconn/.config/systemd ];
-then
-   mkdir -p ./home/jjchkconn/.config/systemd
-   chmod 755 ./home/jjchkconn/.config/systemd
-   chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd
-   chown jjchkconn:jjchkconn ./home/jjchkconn/.config
-fi
+#if [ ! -d ./home/jjchkconn/.config/systemd ];
+#then
+   #mkdir -p ./home/jjchkconn/.config/systemd
+   #chmod 755 ./home/jjchkconn/.config/systemd
+   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd
+   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config
+#fi
 
 if [ ! -d ./home/jjchkconn/.config ];
 then
@@ -34,12 +34,12 @@ then
    chown jjchkconn:jjchkconn ./home/jjchkconn/.config
 fi
 
-if [ ! -d ./home/jjchkconn/.config/systemd/user ];
-then
-   mkdir -p ./home/jjchkconn/.config/systemd/user
-   chmod 750 ./home/jjchkconn/.config/systemd/user
-   chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user
-fi
+#if [ ! -d ./home/jjchkconn/.config/systemd/user ];
+#then
+   #mkdir -p ./home/jjchkconn/.config/systemd/user
+   #chmod 750 ./home/jjchkconn/.config/systemd/user
+   #chown jjchkconn:jjchkconn ./home/jjchkconn/.config/systemd/user
+#fi
 
 mkdir -p ./home/jjchkconn/.config/uSysIntChkd
 chmod 750 ./home/jjchkconn/.config/uSysIntChkd

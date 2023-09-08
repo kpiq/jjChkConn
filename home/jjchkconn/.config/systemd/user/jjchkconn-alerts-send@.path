@@ -1,9 +1,0 @@
-[Unit]
-Description="Monitor the %h/alerts/inbound-alerts file for changes"
-
-[Path]
-PathModified=%h/alerts/inbound-alerts
-Unit=jjchkconn-alerts-send@%i.service
-
-[Install]
-WantedBy=default.target

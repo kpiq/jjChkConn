@@ -1,6 +1,7 @@
 #!/bin/bash
 
-exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uUser=jjchkconn
+exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR, USA
 ### USAGE: scriptname username "message"
