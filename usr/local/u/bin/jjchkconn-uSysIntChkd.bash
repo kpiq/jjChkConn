@@ -13,6 +13,7 @@ exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()
 {
+   echo `date`;
    case $? in
       0) echo "Exit thru normal exit logic.  RC=$?";;
       129) echo "SIGHUP signal caught.  RC=$?";;
