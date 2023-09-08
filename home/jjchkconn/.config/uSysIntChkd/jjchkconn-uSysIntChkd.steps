@@ -1,26 +1,26 @@
-wget -t 1 -w 5 -O - http://209-107-204-129.mia.as54203.net:8080
-wget -t 1 -w 5 -O - http://speedtestfl.gethotwired.com:8080
-wget -t 1 -w 5 -O - http://clients3.google.com/generate_204
-wget -t 1 -w 5 -O - http://server-12215.prod.hosts.ooklaserver.net:8080
-wget -t 1 -w 5 -O - https://fireoscaptiveportal.com/generate_204
-wget -t 1 -w 5 -O - http://tigobo.ecatel.us:8080
-wget -t 1 -w 5 -O - http://www.msftncsi.com/ncsi.txt
-wget -t 1 -w 5 -O - http://speedtest.opticaltel.com:8080
-wget -t 1 -w 5 -O - http://208.89.99.246:8080
-wget -t 1 -w 5 -O - https://connectivitycheck.gstatic.com/generate_204
-wget -t 1 -w 5 -O - http://speedtest-200p.wavebroadband.com:8080
-wget -t 1 -w 5 -O - http://speedtest.fastmetrics.com:8080
-wget -t 1 -w 5 -O - http://www.msftconnecttest.com/connecttest.txt
-wget -t 1 -w 5 -O - http://sfosfookla.wiline.com:8080
-wget -t 1 -w 5 -O - http://ookla.unwiredltd.com:8080
-wget -t 1 -w 5 -O - https://connectivitycheck.android.com/generate_204
-wget -t 1 -w 5 -O - http://stosat-scla-01.sys.comcast.net:8080
-wget -t 1 -w 5 -O - http://sf-speedtest.race.com:8080
-wget -t 1 -w 5 -O - http://speedtest.att.com/index.html
-wget -t 1 -w 5 -O - http://turo.pigscanfly.ca:8080
-wget -t 1 -w 5 -O - http://speed.juhsd.net:8080
-wget -t 1 -w 5 -O - http://speedtest01.open5g.com:8080
-wget -t 1 -w 5 -O - http://speedtest.tekify.com:8080
-ping -c 1 -s 1 speedtest.criticalhub.com
-wget -t 1 -w 5 -O - http://google.com/generate_204
-wget -t 1 -w 5 -O - http://mini5.opera-mini.net/generate_204
+w http://209-107-204-129.mia.as54203.net:8080
+w http://speedtestfl.gethotwired.com:8080
+w http://clients3.google.com/generate_204
+w http://server-12215.prod.hosts.ooklaserver.net:8080
+w https://fireoscaptiveportal.com/generate_204
+w http://tigobo.ecatel.us:8080
+w http://www.msftncsi.com/ncsi.txt
+w http://speedtest.opticaltel.com:8080
+w http://208.89.99.246:8080
+w https://connectivitycheck.gstatic.com/generate_204
+w http://speedtest-200p.wavebroadband.com:8080
+w http://speedtest.fastmetrics.com:8080
+w http://www.msftconnecttest.com/connecttest.txt
+w http://sfosfookla.wiline.com:8080
+w http://ookla.unwiredltd.com:8080
+w https://connectivitycheck.android.com/generate_204
+w http://stosat-scla-01.sys.comcast.net:8080
+w http://sf-speedtest.race.com:8080
+w http://speedtest.att.com/index.html
+w http://turo.pigscanfly.ca:8080
+w http://speed.juhsd.net:8080
+w http://speedtest01.open5g.com:8080
+w http://speedtest.tekify.com:8080
+p speedtest.criticalhub.com
+w http://google.com/generate_204
+w http://mini5.opera-mini.net/generate_204

@@ -129,7 +129,15 @@ function fReadStepsAndCheck()
        if [ "${step_number}" -eq "${line_number}" ];
        then
           echo -e "\nExecuting step ${step_number}"
-          eval "$line" > $uOut
+	  uType=`echo $line|cut -f1 -d" "`;
+	  uSite=`echo $line|cut -f2 -d" "`;
+	  case ${uType} in
+	    w) wget -t 1 -w 5 -O - ${uSite} > $uOut ;;
+	    p) ping -c 1 -s 1 ${uSite} > $uOut ;;
+	    *) echo "$0: Error with site ${uSite} in steps file" > $uOut ;;
+	  esac
+### Changed logic to avoid executing commands from an ini file.
+#          eval "$line" > $uOut
           uRC=$?
        fi
        line_number=$((line_number +1))
