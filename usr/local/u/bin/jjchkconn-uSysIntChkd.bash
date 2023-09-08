@@ -9,7 +9,7 @@
 ### USAGE: scriptname
 
 echo "$0: User=${1}"
-if [ $(id ${1}) -eq 0 ];
+if id "$1" >/dev/null 2>&1;
 then
    declare -g uUser=${1}
 else
