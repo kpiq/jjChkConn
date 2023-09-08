@@ -18,6 +18,8 @@ chmod u+w ./home/jjchkconn/.config/uSysIntChkd/
 
 systemctl daemon-reload
 
+systemctl restart apparmor
+
 systemctl list-unit-files "jj*" || true
 
 systemctl enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
