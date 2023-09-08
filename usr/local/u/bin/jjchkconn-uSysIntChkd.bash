@@ -1,9 +1,5 @@
 #!/bin/bash
 
-echo "$0: User=$1"
-declare -g uUser=jjchkconn
-exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
-
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR
 ### Created: June 23, 2023
 ### Updated: September 8, 2023
@@ -11,6 +7,16 @@ exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 ### Used as the ExecStart= parameter of the uSysIntChkd@.service
 ### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE AS USER ${uUser}.
 ### USAGE: scriptname
+
+echo "$0: User=${1}"
+if [ $(id ${1}) ];
+then
+   declare -g uUser=${1}
+else
+   echo "$0: USERNAME ${1} does not exist.  Abort..."
+   exit 99
+fi
+exec &> ~/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()
@@ -56,7 +62,7 @@ trap fCleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM SIGSTOP SIGXCPU SIGX
 function fInit() 
 {
    ### User runtime directory
-   declare -g dir=~${uUser}/.config/uSysIntChkd
+   declare -g dir=~/.config/uSysIntChkd
 
    if [ ! -d ${dir}  ]; then
        echo "$0: Abort.  User runtime directory ${dir} does not exist."
