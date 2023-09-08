@@ -13,29 +13,31 @@ exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()
 {
+   uRC=$?
    echo `date`;
-   case $? in
-      0) echo "Exit thru normal exit logic.  RC=$?";;
-      129) echo "SIGHUP signal caught.  RC=$?";;
-      130) echo "SIGINT signal caught.  RC=$?";;
-      131) echo "SIGQUIT signal caught.  RC=$?";;
-      134) echo "SIGABRT signal caught.  RC=$?";;
-      137) echo "SIGKILL signal caught.  RC=$?";;
-      143) echo "SIGTERM signal caught.  RC=$?";;
-      149) echo "SIGSTOP signal caught.  RC=$?";;
-      152) echo "SIGXCPU signal caught.  RC=$?";;
-      153) echo "SIGXFSZ signal caught.  RC=$?";;
-      154) echo "SIGVTALRM signal caught.  RC=$?";;
-      155) echo "SIGPROF signal caught.  RC=$?";;
-      156) echo "SIGPWR signal caught.  RC=$?";;
-      *) echo "Unknown signal caught.  RC=$?";;
+   case ${uRC} in
+      0) echo "Exit thru normal exit logic.  RC=${uRC}";;
+      129) echo "SIGHUP signal caught.  RC=${uRC}";;
+      130) echo "SIGINT signal caught.  RC=${uRC}";;
+      131) echo "SIGQUIT signal caught.  RC=${uRC}";;
+      134) echo "SIGABRT signal caught.  RC=${uRC}";;
+      137) echo "SIGKILL signal caught.  RC=${uRC}";;
+      143) echo "SIGTERM signal caught.  RC=${uRC}";;
+      149) echo "SIGSTOP signal caught.  RC=${uRC}";;
+      152) echo "SIGXCPU signal caught.  RC=${uRC}";;
+      153) echo "SIGXFSZ signal caught.  RC=${uRC}";;
+      154) echo "SIGVTALRM signal caught.  RC=${uRC}";;
+      155) echo "SIGPROF signal caught.  RC=${uRC}";;
+      156) echo "SIGPWR signal caught.  RC=${uRC}";;
+      *) echo "Unknown signal caught.  RC=${uRC}";;
    esac
 
    if [ -f ${pidfile} ];
    then
       rm ${pidfile}
    fi
-   exit 0
+
+   exit ${uRC}
 }
 
 # Trap signals.
