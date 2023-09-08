@@ -1,4 +1,4 @@
-# Last Modified: Fri Sep  8 19:01:53 2023
+# Last Modified: Fri Sep  8 19:07:08 2023
 abi <abi/3.0>,
 
 include <tunables/global>
@@ -20,6 +20,8 @@ include <tunables/global>
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.ini r,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.log w,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.next r,
+  owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.next w,
+  owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.output w,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.pid w,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.steps r,
 
