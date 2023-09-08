@@ -4,7 +4,7 @@ exec &> ~/.config/systemd/user/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR
 ### Created: June 23, 2023
-### Updated: June 28, 2023
+### Updated: September 7, 2023
 ### bash script to daemonize the Internet Connectivity Check
 ### Used as the ExecStart= parameter of the uSysIntChkd@.service
 ### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE IN THE --user SYSTEMD CONTEXT.
