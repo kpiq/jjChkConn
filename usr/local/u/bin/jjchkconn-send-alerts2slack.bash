@@ -1,13 +1,21 @@
 #!/bin/bash
 
-declare -g uUser=jjchkconn
-exec &> ~${uUser}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
-
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR, USA
 ### USAGE: scriptname username "message"
 ### DEPENDENCY: file called $uIniFile (see below).  Must
 ###		contain one line starting with exactly: "WebHook="
 ###		followed by the Slack WebHook URL.
+
+echo "$0: User=${1}"
+if id "$1" >/dev/null 2>&1;
+then
+   declare -g uUser=${1}
+else
+   echo "$0: USERNAME ${1} does not exist.  Abort..."
+   exit 99
+fi
+
+exec &> ~/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 if [ $# -ne 2 ]; then
    echo "Abort.  The number of arguments must be strictiy two (2).";
@@ -15,7 +23,6 @@ if [ $# -ne 2 ]; then
    exit 1;
 fi
 
-uUser=$1
 uHomeDir=`getent passwd $uUser|cut -f6 -d:`
 uIniFile="$uHomeDir/.config/jjchkconn-slack-alerts.ini"
 
