@@ -141,35 +141,34 @@ function fReadStepsAndCheck()
 {
    # Read the steps from the file
    declare -g uRC=0
-   declare -g line_number=1
-   while read -r line; do
-       if [ "${step_number}" -eq "${line_number}" ];
-       then
-          echo -e "\nExecuting step ${step_number}"
-	  uType=`echo $line|cut -f1 -d" "`;
-	  uSite=`echo $line|cut -f2 -d" "`;
-	  case ${uType} in
-	    w) wget -t 1 -w 5 -O - ${uSite} > $uOut ;;
-	    p) ping -c 1 -s 1 ${uSite} > $uOut ;;
-	    *) echo "$0: Error with site ${uSite} in steps file" > $uOut ;;
-	  esac
-### Changed logic to avoid executing commands from an ini file.
-#          eval "$line" > $uOut
-          uRC=$?
-       fi
-       line_number=$((line_number +1))
-   done < "$steps_file"
+   declare -g uConnRC=0
+   line=$(sed "${step_number}q;d" "$steps_file")
+   if [ -n "$line" ]; then
+      echo -e "\nExecuting step ${step_number}"
+      uType=`echo $line|cut -f1 -d" "`;
+      uSite=`echo $line|cut -f2 -d" "`;
+      case ${uType} in
+         w) wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} > $uOut ;;
+         p) ping -c ${uPingCount} -s ${uPingSize} ${uSite} > $uOut ;;
+	 *) echo "$0: Error with site ${uSite} in steps file" > $uOut ;;
+      esac
+      uConnRC=$?
+      uRC=${uConnRC}
+   else
+      echo "$0: Logic error.  Step ${step_number} not found in ${steps_file}.  Abort..."
+      exit 6
+   fi
 }
 
 function fSendAlert()
 {
-   if [ "$uRC" -ne 0 ]; 
+   if [ "$uConnRC" -ne 0 ]; 
    then
       ### When confirmed down, check for connectivity and issue alert
       uConnStat=down
       echo "`hostname` $0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
       ### Loop until connectivity returns
-      while [ "$uRC" -ne 0 ];
+      while [ "$uConnRC" -ne 0 ];
       do
          sleep $uPingWait;
          fIncrementStep;
@@ -186,13 +185,18 @@ function fSendAlert()
 
 function fTestRC()
 {
-   if [ "$uRC" -ne 0 ]; then
+   if [ "$uConnRC" -ne 0 ]; then
       echo "`hostname` $0 Error: $line failed.  Loss of connectivity is possible.  `cat $uOut`"
-      ### When loss of connectivity is suspected, check connectivity a 2nd time
-      fIncrementStep;
-      fSaveStepNum;
-      fCheckStepNumber;
-      fReadStepsAndCheck;
+      ### Loss of connectivity is suspected
+      uCount=0
+      while [ "$uConnRC" -ne 0 ] && [ "$uCount" -lt "$uMaxReps" ]; 
+      do
+         fIncrementStep;
+         fSaveStepNum;
+         fCheckStepNumber;
+         fReadStepsAndCheck;
+	 uCount=$((uCount+1))
+      done
       fSendAlert;
    else
       uConnStat=up
