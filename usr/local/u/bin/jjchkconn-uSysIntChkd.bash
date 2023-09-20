@@ -166,7 +166,7 @@ function fSendAlert()
    then
       ### When confirmed down, check for connectivity and issue alert
       uConnStat=down
-      echo "`hostname` $0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
+      echo "`hostname` $0 Error: $line failed.  Executing step ${step_number}.  Loss of connectivity is confirmed. `cat $uOut`"
       ### Loop until connectivity returns
       while [ "$uConnRC" -ne 0 ];
       do
