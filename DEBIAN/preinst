@@ -10,18 +10,21 @@ adduser --disabled-password --shell /bin/bash --home /home/jjchkconn --ingroup j
 
 usermod -aG cdrom,plugdev jjchkconn
 
-while [[ ! -d ./home/jjchkconn ]] || [[ $(id -u jjchkconn) -ne 0 ]]
+while [[ ! -d ./home/jjchkconn ]] || ! id -u jjchkconn >/dev/null 2>&1
 do
   sleep 1
 done
 
 whoami
 export ROOTPUB=`cat /root/.ssh/*.pub`
-su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ./home/jjchkconn/.ssh/id_ed25519'
+mkdir -p ./home/jjchkconn/.ssh
+
 while [ ! -d ./home/jjchkconn/.ssh ]
 do
   sleep 1
 done
+
+su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ./home/jjchkconn/.ssh/id_ed25519'
 
 su -l jjchkconn -c 'touch ~/.ssh/authorized_keys'
 su -l jjchkconn -c 'chmod 600 ~/.ssh/authorized_keys'
