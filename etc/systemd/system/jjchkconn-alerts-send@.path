@@ -5,6 +5,7 @@ Description="Monitor the %h/alerts/inbound-alerts file for changes"
 User=%i
 Group=%i
 PathModified=%h/alerts/inbound-alerts
+PathModified=/home/jjchkconn/alerts/inbound-alerts
 Unit=jjchkconn-alerts-send@%i.service
 
 [Install]

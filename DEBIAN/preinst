@@ -55,8 +55,8 @@ while [ ! -d ./home/jjchkconn/alerts ]
 do
   sleep 1
 done
-chmod 755 ./home/jjchkconn/alerts
-chown jjchkconn:jjchkconn ./home/jjchkconn/alerts
+chmod 775 ./home/jjchkconn/alerts
+chown postfix:mail ./home/jjchkconn/alerts
 
 if [ ! -d ./usr/local/u/bin ];
 then
