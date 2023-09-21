@@ -17,7 +17,7 @@ done
 
 whoami
 export ROOTPUB=`cat /root/.ssh/*.pub`
-mkdir -p ./home/jjchkconn/.ssh
+mkdir -p ./home/jjchkconn/.ssh/
 chown -R jjchkconn:jjchkconn ./home/jjchkconn/.ssh/
 chmod -R 600 ./home/jjchkconn/.ssh/
 
@@ -26,16 +26,13 @@ do
   sleep 1
 done
 
-touch ./home/jjchkconn/.ssh/id_ed25519
+touch ./home/jjchkconn/.ssh/id_ed25519 && chmod -R 600 ./home/jjchkconn/.ssh/
+touch ./home/jjchkconn/.ssh/authorized_keys && chmod 644 ./home/jjchkconn/.ssh/authorized_keys
 chown -R jjchkconn:jjchkconn ./home/jjchkconn/.ssh/
-chmod -R 600 ./home/jjchkconn/.ssh/
 
-su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ./home/jjchkconn/.ssh/id_ed25519'
+#su -l jjchkconn -c 'ssh-keygen -t ed25519 -P "" -f ./home/jjchkconn/.ssh/id_ed25519'
 
-touch ./home/jjchkconn/.ssh/authorized_keys
-chmod 644 ./home/jjchkconn/.ssh/authorized_keys
-chown -R jjchkconn:jjchkconn ./home/jjchkconn/.ssh/
-echo $ROOTPUB >> ./home/jjchkconn/.ssh/authorized_keys
+echo ${ROOTPUB} >> ./home/jjchkconn/.ssh/authorized_keys
 
 sleep 1
 
