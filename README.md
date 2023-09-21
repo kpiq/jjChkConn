@@ -1,6 +1,6 @@
 jjchkconn
 
-v1.2.2-RC2 - Modified on September 20, 2023 - Added text to narrow down which step was being executed when the loss of connectivity is confirmed.  The integrated script continues to succeed.  Testing still under way. 
+v1.2.2-RC11 - Modified on September 21, 2023 - Various issues popped up when the .path systemd unit was activated.  Its corresponding .service unit is failing on file/folder permissions.  Systemd also seems to think that the .path unit has User and Group keys, which it doesn't.  The integrated script continues to succeed.  Testing still under way. 
 
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
