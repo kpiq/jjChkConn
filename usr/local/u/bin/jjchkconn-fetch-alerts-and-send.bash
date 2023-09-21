@@ -12,7 +12,7 @@ then
    exit 1
 fi
 ALERTSFILE=${ALERTSHOME}/alerts/inbound-alerts
-LOCKFILE=${ALERTSFILE}.lock
+LOCKFILE=${ALERTSFILE}.userlock
 
 if [ ! -f ${ALERTSFILE} ];
 then
@@ -45,7 +45,7 @@ else
 fi
 
 ### SEND ALERTS TO SLACK
-/usr/local/u/bin/${uUser}-send-alerts2slack.bash ${ALERTSUSER} "`cat ${ALERTSFILE}`"
+/usr/local/u/bin/jjchkconn-send-alerts2slack.bash ${ALERTSUSER} "`cat ${ALERTSFILE}`"
 if [ $? -ne 0 ]; then
    echo "$0.  Failed to send alert to Slack.  Abort..."
 else
@@ -57,7 +57,7 @@ rm ${ALERTSFILE}
 if [ $? -ne 0 ]; then
    echo "Abort $0.  Failed to remove data file"
 fi
-rm ${ALERTSFILE}.lock
+rm ${LOCKFILE}
 if [ $? -ne 0 ]; then
    echo "Abort $0.  Failed to remove lock file"
 fi
