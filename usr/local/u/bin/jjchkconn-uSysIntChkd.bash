@@ -146,10 +146,12 @@ function fReadStepsAndCheck()
    if [ -n "$line" ]; then
       echo -e "\nExecuting step ${step_number}"
       uType=`echo $line|cut -f1 -d" "`;
-      uSite=`echo $line|cut -f2 -d" "`;
+      uSite=`echo $line|cut -f2- -d" "`;
       case ${uType} in
          w) wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} > $uOut ;;
          p) ping -c ${uPingCount} -s ${uPingSize} ${uSite} > $uOut ;;
+         nu) nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} > $uOut ;;  # netcat for UDP port
+         nt) nc -4 -v -z -w ${uWgetTimeout} ${uSite} > $uOut ;;  # netcat for TCP port
 	 *) echo "$0: Error with site ${uSite} in steps file" > $uOut ;;
       esac
       uConnRC=$?

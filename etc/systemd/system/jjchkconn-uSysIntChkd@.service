@@ -7,7 +7,10 @@ User=%i
 Group=%i
 Type=simple
 ExecStart=/usr/local/u/bin/jjchkconn-uSysIntChkd.bash %i
-Restart=on-failure
+Restart=always
+RestartSec==60
+TimeoutStartSec=60
+StartLimitIntervalSec=60
 
 [Install]
 WantedBy=multi-user.target

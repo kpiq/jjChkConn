@@ -1,26 +1,70 @@
 w http://209-107-204-129.mia.as54203.net:8080
+nu 76.76.2.0 53
+nu ntp2.net.berkeley.edu 123
 w http://speedtestfl.gethotwired.com:8080
+nu 1.1.1.1 53
+nu ntp.gsu.edu 123
 w http://clients3.google.com/generate_204
+nu 94.140.15.154 53
+nu time.esa.int 123
 w http://server-12215.prod.hosts.ooklaserver.net:8080
+nu 9.9.9.9 53
+nu hora.roa.es 123
 w https://fireoscaptiveportal.com/generate_204
+nu 1.0.0.1 53
+nu clock.uregina.ca 123
 w http://tigobo.ecatel.us:8080
+nu 208.67.222.222 53
+nu ntp1.nl.uu.net 123
 w http://www.msftncsi.com/ncsi.txt
+nu 185.228.168.9 53
+nu gps.layer42.net 123
 w http://speedtest.opticaltel.com:8080
+nu 8.8.8.8 53
+nu ntp-s1.cise.ufl.edu 123
 w http://208.89.99.246:8080
+nu time.google.com 123
+nu now.okstate.edu 123
 w https://connectivitycheck.gstatic.com/generate_204
+nu 94.140.14.14 53
+nu navobs1.wustl.edu 123
 w http://speedtest-200p.wavebroadband.com:8080
+nu 8.8.4.4 53
+nu navobs1.gatech.edu 123
 w http://speedtest.fastmetrics.com:8080
+nu time.cloudflare.com 123
+nu gnomon.cc.columbia.edu 123
 w http://www.msftconnecttest.com/connecttest.txt
+nu time.facebook.com 123
+nu otc1.psu.edu 123
 w http://sfosfookla.wiline.com:8080
+nu us.pool.ntp.org 123
+nu rackety.udel.edu 123
 w http://ookla.unwiredltd.com:8080
+nu time.apple.com 123
+nu timekeeper.isi.edu 123
 w https://connectivitycheck.android.com/generate_204
+nu time.windows.com 123
+nu utcnist2.colorado.edu 123
 w http://stosat-scla-01.sys.comcast.net:8080
+nu time.nist.gov 123
+nu clock.isc.org 123
 w http://sf-speedtest.race.com:8080
+nu ntp3.time.in.ua 123
+nu ntp.ripe.net 123
 w http://speedtest.att.com/index.html
+nu 76.76.10.0 53
 w http://turo.pigscanfly.ca:8080
+nu 149.112.112.112 53
 w http://speed.juhsd.net:8080
+nu 208.67.220.220 53
 w http://speedtest01.open5g.com:8080
+nu 76.76.19.19 53
 w http://speedtest.tekify.com:8080
+nu ts1.aco.net 123
 p speedtest.criticalhub.com
+nu ts2.aco.net 123
 w http://google.com/generate_204
+nu ntp1.net.berkeley.edu 123
 w http://mini5.opera-mini.net/generate_204
+nu clock.nyc.he.net 123
