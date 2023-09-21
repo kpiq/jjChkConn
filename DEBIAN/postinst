@@ -32,8 +32,8 @@ newaliases
 systemctl enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
 systemctl enable jjchkconn-alerts-send@jjchkconn.path || true
 
-nohup ( sleep 2; systemctl start jjchkconn-uSysIntChkd@jjchkconn.service  || true ) &
-nohup ( sleep 2; systemctl start  jjchkconn-alerts-send@jjchkconn.path || true ) &
+nohup sh -c 'sleep 2; systemctl start jjchkconn-uSysIntChkd@jjchkconn.service' &
+nohup sh -c 'sleep 2; systemctl start  jjchkconn-alerts-send@jjchkconn.path' &
 
 systemctl status -a "jj*" |cat  || true
 
