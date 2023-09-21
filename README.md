@@ -1,6 +1,6 @@
 jjchkconn
 
-v1.2.2-RC11 - Modified on September 21, 2023 - Various issues popped up when the .path systemd unit was activated.  Its corresponding .service unit is failing on file/folder permissions.  Systemd also seems to think that the .path unit has User and Group keys, which it doesn't.  The integrated script continues to succeed.  Testing still under way. 
+v1.2.2-RC12 - Modified on September 21, 2023 - Modified SystemD service units to tune the Restart options.  Modified the Connectivity Check bash script to add the ability to netcat (nc) for checking connectivity to DNS and NTP servers.  Added a number of Public DNS and NTP servers to the list of steps.  The more steps the less frequent we disturb each server. 
 
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
