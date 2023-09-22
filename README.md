@@ -1,7 +1,6 @@
 jjchkconn
 
-v1.2.2-RC12 - Modified on September 21, 2023 - Modified SystemD service units to tune the Restart options.  Modified the Connectivity Check bash script to add the ability to netcat (nc) for checking connectivity to DNS and NTP servers.  Added a number of Public DNS and NTP servers to the list of steps.  The more steps the less frequent we disturb each server. 
-
+jjchkconn v1.2.2-RC13: Modify various installation, apparmor, SystemD, and file permissions to correct the inability to send Slack alerts.  It is working now.
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
 About
