@@ -29,6 +29,10 @@ EOF
 # Update aliases database
 newaliases
 
+ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
+chown jjchkconn:jjchkconn ${ALERTSINI}
+chmod 700 ${ALERTSINI}
+
 systemctl enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
 systemctl enable jjchkconn-alerts-send@jjchkconn.path || true
 

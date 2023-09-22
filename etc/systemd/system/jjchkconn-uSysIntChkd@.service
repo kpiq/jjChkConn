@@ -1,6 +1,7 @@
 [Unit]
 Description=jjchkconn-uSysIntChkd@%i.service - User-defined service to monitor Internet connectivity
 After=network-online.target
+StartLimitIntervalSec=60
 
 [Service]
 User=%i
@@ -8,9 +9,8 @@ Group=%i
 Type=simple
 ExecStart=/usr/local/u/bin/jjchkconn-uSysIntChkd.bash %i
 Restart=always
-RestartSec==60
+RestartSec=60
 TimeoutStartSec=60
-StartLimitIntervalSec=60
 
 [Install]
 WantedBy=multi-user.target

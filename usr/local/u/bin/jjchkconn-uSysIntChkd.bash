@@ -8,15 +8,42 @@
 ### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE AS USER ${uUser}.
 ### USAGE: scriptname
 
-echo "$0: User=${1}"
-if id "$1" >/dev/null 2>&1;
+if [ -z "${1}" ];
 then
-   declare -g uUser=${1}
+   declare -g uUser=jjchkconn
 else
-   echo "$0: USERNAME ${1} does not exist.  Abort..."
-   exit 99
+   echo "$0: User=${1}"
+   if id "$1" >/dev/null 2>&1;
+   then
+      declare -g uUser=${1}
+   else
+      echo "$0: USERNAME ${1} does not exist.  Abort..."
+      exit 99
+   fi
 fi
-exec &> ~/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+
+declare -g uUserHome=`getent passwd ${uUser} | cut -f6 -d:`
+exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uGetEntStatus=${PIPESTATUS[0]}
+declare -g uCutStatus=${PIPESTATUS[1]}
+
+if [[ ${uGetEntStatus} -eq 0 ]] && [[ ${uCutStatus} -eq 0 ]];
+then
+   ### HOME Directory is properly configured for this user. ###
+   ### Now test whether it exists. ###
+   if [ ! -d ${uUserHome} ];
+   then
+      echo "$0: HOME Directory ${uUserHome} does not exist.  Abort..."
+      exit 1
+   fi
+else
+   echo -e "\n$0: getent exit code = ${uGetEntStatus}"
+   echo -e "\n$0: cut exit code = ${uCutStatus}"
+   echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
+   exit 2
+fi
+
+exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()

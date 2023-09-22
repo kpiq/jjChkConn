@@ -3,7 +3,7 @@ abi <abi/3.0>,
 
 include <tunables/global>
 
-/usr/local/u/bin/jjchkconn-send-alerts2slack.bash {
+/usr/local/u/bin/jjchkconn-fetch-alerts-and-send.bash {
   include <abstractions/base>
   include <abstractions/bash>
   include <abstractions/consoles>
@@ -24,7 +24,7 @@ include <tunables/global>
   /home/jjchkconn/**/* rw,
   /usr/local/u/bin/** mrwix,
   /usr/local/u/bin/**/* mrwix,
-#  /usr/local/u/bin/jjchkconn-send-alerts2slack.bash rix,
+#  /usr/local/u/bin/jjchkconn-fetch-alerts-and-send.bash mrwix,
   owner /home/*/.config/jjchkconn-slack-alerts.ini r,
   owner /proc/*/maps r,
   owner /proc/filesystems r,

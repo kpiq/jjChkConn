@@ -80,4 +80,5 @@ if [ ! -s ${ALERTSINI} ];
 then
    echo 'WebHook=https://hooks.slack.com/services/' > ${ALERTSINI}
 fi
+chown jjchkconn:jjchkconn ${ALERTSINI}
 chmod 700 ${ALERTSINI}

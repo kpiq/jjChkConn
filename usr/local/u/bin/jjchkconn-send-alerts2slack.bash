@@ -6,21 +6,47 @@
 ###		contain one line starting with exactly: "WebHook="
 ###		followed by the Slack WebHook URL.
 
-echo "$0: User=${1}"
-if id "$1" >/dev/null 2>&1;
+if [ -z "${1}" ];
 then
-   declare -g uUser=${1}
+   declare -g uUser=jjchkconn
 else
-   echo "$0: USERNAME ${1} does not exist.  Abort..."
-   exit 99
+   echo "$0: User=${1}"
+   if id "$1" >/dev/null 2>&1;
+   then
+      declare -g uUser=${1}
+   else
+      echo "$0: USERNAME ${1} does not exist.  Abort..."
+      exit 99
+   fi
 fi
 
-exec &> ~/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uUserHome=`getent passwd ${uUser} | cut -f6 -d:`
+exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+declare -g uGetEntStatus=${PIPESTATUS[0]}
+declare -g uCutStatus=${PIPESTATUS[1]}
+
+if [[ ${uGetEntStatus} -eq 0 ]] && [[ ${uCutStatus} -eq 0 ]];
+then
+   ### HOME Directory is properly configured for this user. ###
+   ### Now test whether it exists. ###
+   if [ ! -d ${uUserHome} ];
+   then
+      echo "$0: HOME Directory ${uUserHome} does not exist.  Abort..."
+      exit 1
+   fi
+else
+   echo -e "\n$0: getent exit code = ${uGetEntStatus}"
+   echo -e "\n$0: cut exit code = ${uCutStatus}"
+   echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
+   exit 2
+fi
+
+exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 
 if [ $# -ne 2 ]; then
    echo "Abort.  The number of arguments must be strictiy two (2).";
    echo "	 If passing arguments with whitespaces enclose text in quotes.";
-   exit 1;
+   exit 3;
 fi
 
 uHomeDir=`getent passwd $uUser|cut -f6 -d:`
@@ -31,7 +57,7 @@ then
    uWebHook=`grep WebHook "$uIniFile"|cut -f2 -d=`
 else
    echo "Abort.  "$uIniFile" does not exist"
-   exit 2
+   exit 4
 fi
 
 ### In case attachments are desired use the following format:
