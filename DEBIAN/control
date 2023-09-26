@@ -1,5 +1,5 @@
 Package: jjchkconn
-Version: 1.2.2-RC13
+Version: 1.3.0
 Maintainer: Pedro Serrano <dev@jj10.net>
 Architecture: amd64
 Description: Monitor Internet connectivity using various/flexible methods.

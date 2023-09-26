@@ -1,6 +1,7 @@
 jjchkconn
 
-jjchkconn v1.2.2-RC13: Modify various installation, apparmor, SystemD, and file permissions to correct the inability to send Slack alerts.  It is working now.
+jjchkconn v1.3.0 (Final Release): v1.3.0 has been sufficiently tested and can now be recommended for live use.
+
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
 About
