@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.0 (Final Release): v1.3.0 has been sufficiently tested and can now be recommended for live use.
+jjchkconn v1.3.0.1 : This version includes mods for using Slack's chat.PostMessage method instead of Incoming Webhooks(IW).  IW will be deprecated in the near future.
 
 Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
 
@@ -22,13 +22,14 @@ All components have been packaged in a .deb(ian) package and are ready for insta
 
 dpkg -i jjchkconn.deb
 
-Permissions and ownership are ready for action.  The Slack webhooks ini file must be changed manually.  Insert the Slack incoming webhook URL as stated below.
+Permissions and ownership are ready for action.  The Slack sendmsg ini file must be changed manually.  Insert the Slack ChannelID and BotToken information as stated below.
 
 Configurations
 
-jjchkconn-slack-alerts.ini file requires manual configuration.  "https://hooks.slack.com/services/" is a placeholder.  Fetch the URL from your Slack channel's API site.
+jjchkconn-slack-alerts.ini file requires manual configuration.  Fetch the data from your Slack channel's API site.
 
-	WebHook=https://hooks.slack.com/services/
+	ChannelID=<slack-channel-id>
+	BotToken=<slack-bot-token>
 
 jjchkconn-uSysIntChkd.ini file requires manual configuration.
 

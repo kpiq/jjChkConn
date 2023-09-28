@@ -3,8 +3,8 @@
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR, USA
 ### USAGE: scriptname username "message"
 ### DEPENDENCY: file called $uIniFile (see below).  Must
-###		contain one line starting with exactly: "WebHook="
-###		followed by the Slack WebHook URL.
+###		contain lines containing the ChannelID and BotToken
+###		for your Slack app.
 
 if [ -z "${1}" ];
 then
@@ -21,6 +21,8 @@ else
 fi
 
 declare -g uUserHome=`getent passwd ${uUser} | cut -f6 -d:`
+
+echo -e "\nLogfile=" ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
 declare -g uGetEntStatus=${PIPESTATUS[0]}
 declare -g uCutStatus=${PIPESTATUS[1]}
@@ -41,8 +43,6 @@ else
    exit 2
 fi
 
-exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
-
 if [ $# -ne 2 ]; then
    echo "Abort.  The number of arguments must be strictiy two (2).";
    echo "	 If passing arguments with whitespaces enclose text in quotes.";
@@ -52,19 +52,21 @@ fi
 uHomeDir=`getent passwd $uUser|cut -f6 -d:`
 uIniFile="$uHomeDir/.config/jjchkconn-slack-alerts.ini"
 
-if [ -f "$uIniFile" ];
+if [ ! -f "$uIniFile" ];
 then
-   uWebHook=`grep WebHook "$uIniFile"|cut -f2 -d=`
-else
    echo "Abort.  "$uIniFile" does not exist"
    exit 4
 fi
 
 ### In case attachments are desired use the following format:
 ###	curl -X POST -H 'Content-type: application/json' -F 'file=@somefile1.txt' -F 'file=@somefile2.txt' http://someurl
-if [ -s "${2}" ];
+if [ ! -s "${2}" ];
 then
-   jq -Rs '{text: .}' "${2}" | curl -X POST -H 'Content-type: application/json' -d @- $uWebHook
-else
-   curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"${2}\"}" $uWebHook
+   /usr/local/u/bin/sendmsg2Slack.sh "${uIniFile}" "${2}"
+   if [ $? -ne 0 ]; then
+      echo "$0.  Failed to send message to Slack.  Abort..."
+      exit 5
+   else
+      echo "$0.  Message sent to slack.com.  Success..."
+   fi
 fi

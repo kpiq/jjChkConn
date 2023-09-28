@@ -171,17 +171,30 @@ function fReadStepsAndCheck()
    declare -g uConnRC=0
    line=$(sed "${step_number}q;d" "$steps_file")
    if [ -n "$line" ]; then
-      echo -e "\nExecuting step ${step_number}"
+      echo -e "\n`hostname`-`date`: $0 Executing step ${step_number}"
       uType=`echo $line|cut -f1 -d" "`;
       uSite=`echo $line|cut -f2- -d" "`;
       case ${uType} in
-         w) wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} > $uOut ;;
-         p) ping -c ${uPingCount} -s ${uPingSize} ${uSite} > $uOut ;;
-         nu) nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} > $uOut ;;  # netcat for UDP port
-         nt) nc -4 -v -z -w ${uWgetTimeout} ${uSite} > $uOut ;;  # netcat for TCP port
-	 *) echo "$0: Error with site ${uSite} in steps file" > $uOut ;;
+        w)
+          wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} > $uOut
+          uConnRC=$?
+          ;;
+        p)
+          ping -c ${uPingCount} -s ${uPingSize} ${uSite} > $uOut
+          uConnRC=$?
+          ;;
+        nu) # netcat for UDP port
+          nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} > $uOut
+          uConnRC=$?
+          ;;
+        nt) # netcat for TCP port
+          nc -4 -v -z -w ${uWgetTimeout} ${uSite} > $uOut
+          uConnRC=$?
+          ;;
+        *)
+          echo "$0: Error with site ${uSite} in steps file" > $uOut
+          ;;
       esac
-      uConnRC=$?
       uRC=${uConnRC}
    else
       echo "$0: Logic error.  Step ${step_number} not found in ${steps_file}.  Abort..."
@@ -195,7 +208,7 @@ function fSendAlert()
    then
       ### When confirmed down, check for connectivity and issue alert
       uConnStat=down
-      echo "`hostname` $0 Error: $line failed.  Executing step ${step_number}.  Loss of connectivity is confirmed. `cat $uOut`"
+      echo "`hostname`-`date`: $0 Error: $line failed.  Executing step ${step_number}.  Loss of connectivity is confirmed. `cat $uOut`"
       ### Loop until connectivity returns
       while [ "$uConnRC" -ne 0 ];
       do
@@ -208,7 +221,7 @@ function fSendAlert()
       ### Connectivity has returned.   Send the alert
       uConnStat=up
       sleep $uPingWait;
-      source /usr/local/u/bin/${uUser}-send-alerts2slack.bash $(whoami) "`hostname` $0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
+      source /usr/local/u/bin/jjchkconn-send-alerts2slack.bash $(whoami) "$0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
    fi
 }
 
