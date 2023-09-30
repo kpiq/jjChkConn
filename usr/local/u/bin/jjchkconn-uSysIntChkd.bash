@@ -8,42 +8,83 @@
 ### WHEN INITIATED BY SYSTEMD ALWAYS EXECUTE AS USER ${uUser}.
 ### USAGE: scriptname
 
-if [ -z "${1}" ];
-then
-   declare -g uUser=jjchkconn
-else
-   echo "$0: User=${1}"
-   if id "$1" >/dev/null 2>&1;
+############### FUNCTION DEFINITIONS: BEGIN ###############
+function fInit() 
+{
+   if [ -z "${1}" ];
    then
-      declare -g uUser=${1}
+      declare -g uUser=jjchkconn
    else
-      echo "$0: USERNAME ${1} does not exist.  Abort..."
-      exit 99
+      echo "$0: User=${1}"
+      if id "$1" >/dev/null 2>&1;
+      then
+         declare -g uUser=${1}
+      else
+         echo "$0: USERNAME ${1} does not exist.  Abort..."
+         exit 99
+      fi
    fi
-fi
-
-declare -g uUserHome=`getent passwd ${uUser} | cut -f6 -d:`
-exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
-declare -g uGetEntStatus=${PIPESTATUS[0]}
-declare -g uCutStatus=${PIPESTATUS[1]}
-
-if [[ ${uGetEntStatus} -eq 0 ]] && [[ ${uCutStatus} -eq 0 ]];
-then
-   ### HOME Directory is properly configured for this user. ###
-   ### Now test whether it exists. ###
-   if [ ! -d ${uUserHome} ];
+   
+   declare -g uUserHome=`getent passwd ${uUser} | cut -f6 -d:`
+   declare -g uGetEntStatus=${PIPESTATUS[0]}
+   declare -g uCutStatus=${PIPESTATUS[1]}
+   
+   exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+   
+   if [[ ${uGetEntStatus} -eq 0 ]] && [[ ${uCutStatus} -eq 0 ]];
    then
-      echo "$0: HOME Directory ${uUserHome} does not exist.  Abort..."
-      exit 1
+      ### HOME Directory is properly configured for this user. ###
+      ### Now test whether it exists. ###
+      if [ ! -d ${uUserHome} ];
+      then
+         echo "$0: HOME Directory ${uUserHome} does not exist.  Abort..."
+         exit 1
+      fi
+   else
+      echo -e "\n$0: getent exit code = ${uGetEntStatus}"
+      echo -e "\n$0: cut exit code = ${uCutStatus}"
+      echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
+      exit 2
    fi
-else
-   echo -e "\n$0: getent exit code = ${uGetEntStatus}"
-   echo -e "\n$0: cut exit code = ${uCutStatus}"
-   echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
-   exit 2
-fi
 
-exec &> ${uUserHome}/.config/uSysIntChkd/`basename ${0:0:-5} | sed 's/\@//g'`.log
+   declare -g uRC=0
+   declare -g uConnRC=0
+   declare -g line=""
+   declare -g uType=""
+   declare -g uSite=""
+   declare -g uConnStat=""
+   declare -g uCount=0
+
+   ### User runtime directory
+   declare -g dir=${uUserHome}/.config/uSysIntChkd
+
+   if [ ! -d ${dir}  ]; then
+       echo "$0: Abort.  User runtime directory ${dir} does not exist."
+       exit 1
+   else
+       cd ${dir}
+   fi
+
+   source ./`basename ${0:0:-5}`.ini $0
+
+   if [ ${#procs[@]} -gt 1 ]; then
+	   echo "Daemon already running (${#procs[@]})"
+      exit 2
+   fi
+
+   if [ ! -f $pidfile ]; then
+      echo $$ > $pidfile
+   fi
+   
+   ### Clean output file before starting execution
+   if [ -f ${uOut} ];
+   then
+      rm ${uOut} 2> /dev/null
+   fi
+
+   # Save the total number of lines on the steps_file, as an integer.
+   declare -g num_steps=$(awk 'END {print int($1)}' "$steps_file")
+}
 
 ### Define fCleanup before using it in the trap statement.
 function fCleanup()
@@ -72,6 +113,7 @@ function fCleanup()
       rm ${pidfile}
    fi
 
+   ### Debugging logic.  Find out where the program failed.   
    echo "$0: Listing all function names in the FUNCNAME array";
    # List all function names in FUNCNAME array
    for func in "${FUNCNAME[@]}"; do
@@ -79,45 +121,6 @@ function fCleanup()
    done
 
    exit ${uRC}
-}
-
-# Trap signals.
-trap fCleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM SIGSTOP SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGPWR
-
-
-############### FUNCTION DEFINITIONS: BEGIN ###############
-function fInit() 
-{
-   ### User runtime directory
-   declare -g dir=~/.config/uSysIntChkd
-
-   if [ ! -d ${dir}  ]; then
-       echo "$0: Abort.  User runtime directory ${dir} does not exist."
-       exit 1
-   else
-       cd ${dir}
-   fi
-
-   source ./`basename ${0:0:-5}`.ini $0
-
-   if [ ${#procs[@]} -gt 1 ]; then
-	   echo "Daemon already running (${#procs[@]})"
-      exit 2
-   fi
-
-   if [ ! -f $pidfile ]; then
-      echo $$ > $pidfile
-   fi
-   
-   ### Clean output file before starting execution
-   if [ -f ${uOut} ];
-   then
-      rm ${uOut} 2> /dev/null
-   fi
-
-   # Save the total number of lines on the steps_file, as an integer.
-   declare -g num_steps=$(awk 'END {print int($1)}' "$steps_file")
-
 }
 
 function fValidate()
@@ -143,7 +146,7 @@ function fValidate()
    # Validate the step number
    if ! [[ "${step_number}" =~ ^[0-9]+$ ]]; 
    then
-	   echo "The step number ("${step_number}") must be a number."
+     echo "The step number ("${step_number}") must be a number."
      exit 5
    fi
 }
@@ -167,8 +170,8 @@ function fCheckStepNumber()
 function fReadStepsAndCheck()
 {
    # Read the steps from the file
-   declare -g uRC=0
-   declare -g uConnRC=0
+   uRC=0
+   uConnRC=0
    line=$(sed "${step_number}q;d" "$steps_file")
    if [ -n "$line" ]; then
       echo -e "\n`hostname`-`date`: $0 Executing step ${step_number}"
@@ -252,7 +255,8 @@ function fIncrementStep()
 }
 ############### FUNCTION DEFINITIONS:  END  ###############
 
-### Initialize all variables and validate all files and directories
+# Trap signals.
+trap fCleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGTERM SIGSTOP SIGXCPU SIGXFSZ SIGVTALRM SIGPROF SIGPWR
 
 umask 006
 

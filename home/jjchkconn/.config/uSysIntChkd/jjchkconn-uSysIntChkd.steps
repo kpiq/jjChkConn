@@ -1,3 +1,4 @@
+nu 24.138.252.19 53
 w http://209-107-204-129.mia.as54203.net:8080
 nu 76.76.2.0 53
 nu ntp2.net.berkeley.edu 123
@@ -12,6 +13,7 @@ nu 9.9.9.9 53
 nu hora.roa.es 123
 w https://fireoscaptiveportal.com/generate_204
 nu 1.0.0.1 53
+nu 24.55.102.2 53
 nu clock.uregina.ca 123
 w http://tigobo.ecatel.us:8080
 nu 208.67.222.222 53
@@ -23,6 +25,7 @@ w http://speedtest.opticaltel.com:8080
 nu 8.8.8.8 53
 nu ntp-s1.cise.ufl.edu 123
 w http://208.89.99.246:8080
+nu 24.138.252.19 53
 nu time.google.com 123
 nu now.okstate.edu 123
 w https://connectivitycheck.gstatic.com/generate_204
@@ -40,6 +43,7 @@ nu otc1.psu.edu 123
 w http://sfosfookla.wiline.com:8080
 nu us.pool.ntp.org 123
 nu rackety.udel.edu 123
+nu 24.55.102.2 53
 w http://ookla.unwiredltd.com:8080
 nu time.apple.com 123
 nu timekeeper.isi.edu 123
@@ -52,6 +56,7 @@ nu clock.isc.org 123
 w http://sf-speedtest.race.com:8080
 nu ntp3.time.in.ua 123
 nu ntp.ripe.net 123
+nu 24.138.252.19 53
 w http://speedtest.att.com/index.html
 nu 76.76.10.0 53
 w http://turo.pigscanfly.ca:8080
@@ -68,3 +73,4 @@ w http://google.com/generate_204
 nu ntp1.net.berkeley.edu 123
 w http://mini5.opera-mini.net/generate_204
 nu clock.nyc.he.net 123
+nu 24.55.102.2 53
