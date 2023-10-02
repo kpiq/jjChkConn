@@ -1,4 +1,5 @@
 #!/bin/bash
+### Make sure this process does not have duplicates.
 
 ### Author: Pedro Serrano, jj10 Net LLC, Bayamon, PR
 ### Created: June 23, 2023
@@ -52,7 +53,8 @@ function fInit()
    declare -g line=""
    declare -g uType=""
    declare -g uSite=""
-   declare -g uConnStat=""
+   ### Connectivity Status
+   declare -g uConnStat=up
    declare -g uCount=0
 
    ### User runtime directory
@@ -65,8 +67,24 @@ function fInit()
        cd ${dir}
    fi
 
-   source ./`basename ${0:0:-5}`.ini $0
+   ### Prefix of script being executed
+   declare -g uIniname=`basename ${0:0:-5}`
 
+   declare -g pidfile="${dir}/${uIniname}.pid"
+
+   ## Output of this script will be redirected to this file
+   declare -g uOut="${dir}/${uIniname}.output"
+
+   # Get the number of steps
+   declare -g steps_file="${dir}/${uIniname}.steps"
+
+   ### $dir is used in the .ini file.  Do not move the following statement
+   ### without moving the user runtime declaration with it.
+   source ./${uIniname}.ini $0
+
+   ### Make sure this process does not have duplicates.
+   ### Check if the daemon is already running using pidof
+   declare -g procs=`pidof $(basename $0)`
    if [ ${#procs[@]} -gt 1 ]; then
 	   echo "Daemon already running (${#procs[@]})"
       exit 2
@@ -133,7 +151,7 @@ function fValidate()
    fi
    
    # Check the step_number file
-   declare -g step_number_file="./${uCmd}.next"
+   declare -g step_number_file="./${uIniname}.next"
    if [ ! -f $step_number_file ];
    then
       echo "Abort.  $step_number_file does not exist";
@@ -195,7 +213,7 @@ function fReadStepsAndCheck()
           uConnRC=$?
           ;;
         *)
-          echo "$0: Error with site ${uSite} in steps file" > $uOut
+          echo "$0: Error with site definition for ${uSite} in steps file" > $uOut
           ;;
       esac
       uRC=${uConnRC}
@@ -207,7 +225,7 @@ function fReadStepsAndCheck()
 
 function fSendAlert()
 {
-   if [ "$uConnRC" -ne 0 ]; 
+   if [ "$uConnRC" -ne 0 ] || [ "$uCount" -ge "$uMaxReps" ]; 
    then
       ### When confirmed down, check for connectivity and issue alert
       uConnStat=down
@@ -223,7 +241,8 @@ function fSendAlert()
       done
       ### Connectivity has returned.   Send the alert
       uConnStat=up
-      sleep $uPingWait;
+      echo -e "\n\n`hostname`-`date`: $0 Getting ready to send alert to Slack"
+      sleep $uSleepAfterOK;
       source /usr/local/u/bin/jjchkconn-send-alerts2slack.bash $(whoami) "$0 Error: $line failed.  Loss of connectivity is confirmed. `cat $uOut`"
    fi
 }
@@ -232,7 +251,7 @@ function fTestRC()
 {
    if [ "$uConnRC" -ne 0 ]; then
       echo "`hostname` $0 Error: $line failed.  Loss of connectivity is possible.  `cat $uOut`"
-      ### Loss of connectivity is suspected
+      ### Loss of connectivity is suspected. Loop to confirm the loss.
       uCount=0
       while [ "$uConnRC" -ne 0 ] && [ "$uCount" -lt "$uMaxReps" ]; 
       do
@@ -240,7 +259,9 @@ function fTestRC()
          fSaveStepNum;
          fCheckStepNumber;
          fReadStepsAndCheck;
-	 uCount=$((uCount+1))
+	 if [ "$uConnRC" -ne 0 ]; then
+	    uCount=$((uCount+1))
+	 fi
       done
       fSendAlert;
    else

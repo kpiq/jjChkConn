@@ -60,9 +60,12 @@ fi
 
 ### In case attachments are desired use the following format:
 ###	curl -X POST -H 'Content-type: application/json' -F 'file=@somefile1.txt' -F 'file=@somefile2.txt' http://someurl
+
+echo -e "\n\n `hostname` - `date` $0 Attempting to send message to Slack"
+
 if [ ! -s "${2}" ];
 then
-   /usr/local/u/bin/sendmsg2Slack.sh "${uIniFile}" "${2}"
+   bash /usr/local/u/bin/sendmsg2Slack.sh "${uIniFile}" "${2}"
    if [ $? -ne 0 ]; then
       echo "$0.  Failed to send message to Slack.  Abort..."
       exit 5
