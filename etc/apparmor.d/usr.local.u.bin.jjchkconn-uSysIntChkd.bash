@@ -1,4 +1,4 @@
-# Last Modified: Fri Sep  8 20:14:05 2023
+# Last Modified: Mon Oct  9 21:16:30 2023
 abi <abi/3.0>,
 
 include <tunables/global>
@@ -10,17 +10,19 @@ include <tunables/global>
   include <abstractions/lightdm>
 
   /home/*/.config/jjchkconn-slack-alerts.ini r,
+  /home/jjchkconn/** rw,
+  /home/jjchkconn/**/* rw,
   /proc/*/cmdline r,
   /proc/filesystems r,
+  /proc/sys/kernel/osrelease r,
   /proc/sys/kernel/random/boot_id r,
   /usr/bin/basename mrix,
   /usr/bin/bash ix,
   /usr/bin/sed mrix,
-  /home/jjchkconn/** rw,
-  /home/jjchkconn/**/* rw,
+  /usr/bin/awk mrix,
+  /usr/bin/pgrep mrix,
   /usr/local/u/bin/** mrwix,
   /usr/local/u/bin/**/* mrwix,
-#  /usr/local/u/bin/jjchkconn-uSysIntChkd.bash rix,
   /{,var/}run/** mrwk,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.ini r,
   owner /home/*/.config/uSysIntChkd/jjchkconn-uSysIntChkd.log w,

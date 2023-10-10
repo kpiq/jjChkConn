@@ -1,8 +1,35 @@
 jjchkconn
 
-jjchkconn v1.3.0.1 : This version includes mods for using Slack's chat.PostMessage method instead of Incoming Webhooks(IW).  IW will be deprecated in the near future.
+jjchkconn v1.3.1 : This version includes mods for additional step-type indicators in the steps_file.  These include:
+	New Functionality:
+	Type2 operations, used to target local gateways, Intranet sites of
+	interest, and other sites of interest.
+	- dgn: Default gateway, network.  Will accept one or more ot these
+	  to monitor single-WAN or multi-WAN setups.
+	- dgl: Default gateway, local.  Local system gateway.  Eliminates
+	  the need for a 2nd argument on the line since it will derive
+	  the default gateway using `ip route|grep default`.
+	- tr: Transit node.  This will handle relevant node(s) to watch,
+	  particularly on the path between the local host (dgl) and the default
+	  gateway (dgn).  Can also be used for external relevant sites.
 
-Monitor Internet Connectivity, with alerts using a Slack channel, for Systemd distros.
+	dgn,dgl, and tr are to be used to assesss latency and packet loss, not 
+	full out-of-service conditions.
+	
+	Other additions:
+	- Modify fReadStepsAndCheck function to use uConnStat in the if 
+	  condition, with new indicator values.
+	- Create new function to evaluate packet loss and latency for the
+	  three new step-type indicators.   Use ping with the same packet
+	  size, but a new minimum ping count of 3, in order to average the
+	  round trip statistics.
+	- Multiple code optimizations.
+
+	Bug fixes:
+	- sendmsg2slack.sh is incorrectly being called using bash, when it is
+	  a sh script.  Either remove "bash" or change it to "sh".
+
+Starting with v1.3.1 it will not only monitor Internet connectivity.  It will Monitor various Network Connectivity issues, with alerts using a Slack channel, for Systemd distros.
 
 About
 
