@@ -251,7 +251,9 @@ function fEvalResults()
       declare -i uAcceptable=$(awk '{print int($uAcceptableLoss)}' <<< "$uAcceptableLoss")
       if [ ${uActual} -gt ${uAcceptable} ];
       then
-	 echo -e "\n`hostname` - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Packet loss of ${uActual}% is unacceptable.   Acceptable maximum is ${uAcceptable}%" >> $uOut
+	 echo -e "\n`hostname` - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Packet loss of ${uActual}% is unacceptable.   Acceptable maximum is ${uAcceptable}%" >> $uOut >> $uCurrOut
+	 fWait4GoodConnection;
+         fSendAlert;
          uConnStat="PACKET LOSS"
 	 uLossOrLatency=true
       fi
@@ -267,7 +269,9 @@ function fEvalResults()
       declare -i uAcceptable=$(awk '{print int($uAcceptableLatency)}' <<< "$uAcceptableLatency")
       if [ ${uActual} -gt ${uAcceptable} ];
       then
-	 echo -e "\n`hostname` - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Latency is unacceptable: ${uActual}ms.   Acceptable maximum is ${uAcceptable}ms." >> $uOut
+	 echo -e "\n`hostname` - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Latency is unacceptable: ${uActual}ms.   Acceptable maximum is ${uAcceptable}ms." >> $uOut >> $uCurrOut
+	 fWait4GoodConnection;
+         fSendAlert;
          uConnStat="HIGH LATENCY"
 	 uLossOrLatency=true
       fi

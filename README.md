@@ -1,7 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.1 : This version includes mods for additional step-type indicators in the steps_file.  These include:
-	New Functionality:
+jjchkconn v1.3.2 : This version includes mods to send alerts for the Type2 step-type indicators.  These include:
 	Type2 operations, used to target local gateways, Intranet sites of
 	interest, and other sites of interest.
 	- dgn: Default gateway, network.  Will accept one or more ot these
@@ -15,21 +14,8 @@ jjchkconn v1.3.1 : This version includes mods for additional step-type indicator
 
 	dgn,dgl, and tr are to be used to assesss latency and packet loss, not 
 	full out-of-service conditions.
-	
-	Other additions:
-	- Modify fReadStepsAndCheck function to use uConnStat in the if 
-	  condition, with new indicator values.
-	- Create new function to evaluate packet loss and latency for the
-	  three new step-type indicators.   Use ping with the same packet
-	  size, but a new minimum ping count of 3, in order to average the
-	  round trip statistics.
-	- Multiple code optimizations.
 
-	Bug fixes:
-	- sendmsg2slack.sh is incorrectly being called using bash, when it is
-	  a sh script.  Either remove "bash" or change it to "sh".
-
-Starting with v1.3.1 it will not only monitor Internet connectivity.  It will Monitor various Network Connectivity issues, with alerts using a Slack channel, for Systemd distros.
+Starting with v1.3.2 it will not only monitor Internet connectivity.  It will Monitor various Network Connectivity issues, with alerts using a Slack channel, for Systemd distros.
 
 About
 
