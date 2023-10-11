@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.2.1 : This version includes a mod to display the amount of seconds/minutes/hours that the service as down or degraded.
+jjchkconn v1.3.3 : This version fixes the logic to calculate the amount of seconds/minutes/hours that the service as down or degraded.
 
 About
 

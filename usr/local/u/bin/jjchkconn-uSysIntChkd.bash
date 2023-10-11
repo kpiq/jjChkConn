@@ -434,6 +434,8 @@ function fWait4GoodConnection
    cp -a $uCurrOut $uMsgfile
    declare -g uSaveline=$line
 
+   uBeginCountingSeconds=$(date +%s)
+
    ### Wait until connectivity returns
    while [ "$uConnStat" != "ok" ];
    do
@@ -443,12 +445,13 @@ function fWait4GoodConnection
       fCheckStepNumber;
       fReadStepsAndCheck;
    done
+   ### Connectivity has returned.
+
    uEndCountingSeconds=$(date +%s)
    uConfirmedDownSecs=$((uEndCountingSeconds - uBeginCountingSeconds))
    uConfirmedDownMins=$(echo "scale=2; $uConfirmedDownSecs / 60" | bc)
    uConfirmedDownHrs=$(echo "scale=2; $uConfirmedDownMins / 60" | bc)
    echo -e "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Connectivity Loss is confirmed.  Down/degraded time is: $uConfirmedDownSecs seconds ($uConfirmedDownMins minutes / $uConfirmedDownHrs hours)." |tee -a $uCurrOut $uMsgfile >> $uOut
-   ### Connectivity has returned.
 }
 
 function fSendAlert()
@@ -490,7 +493,6 @@ function fTestRC()
    uCurrCat=fCategorizeuType;
    if [[ "$uConnStat" != "ok" ]]; 
    then
-      uBeginCountingSeconds=$(date +%s)
       uLossSuspected=true
       echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Error: $line failed.  Loss of connectivity is possible.  `cat $uCurrOut`"
       ### Loss of connectivity is suspected. 
