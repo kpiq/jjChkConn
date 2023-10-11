@@ -1,21 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.2 : This version includes mods to send alerts for the Type2 step-type indicators.  These include:
-	Type2 operations, used to target local gateways, Intranet sites of
-	interest, and other sites of interest.
-	- dgn: Default gateway, network.  Will accept one or more ot these
-	  to monitor single-WAN or multi-WAN setups.
-	- dgl: Default gateway, local.  Local system gateway.  Eliminates
-	  the need for a 2nd argument on the line since it will derive
-	  the default gateway using `ip route|grep default`.
-	- tr: Transit node.  This will handle relevant node(s) to watch,
-	  particularly on the path between the local host (dgl) and the default
-	  gateway (dgn).  Can also be used for external relevant sites.
-
-	dgn,dgl, and tr are to be used to assesss latency and packet loss, not 
-	full out-of-service conditions.
-
-Starting with v1.3.2 it will not only monitor Internet connectivity.  It will Monitor various Network Connectivity issues, with alerts using a Slack channel, for Systemd distros.
+jjchkconn v1.3.2.1 : This version includes a mod to display the amount of seconds/minutes/hours that the service as down or degraded.
 
 About
 

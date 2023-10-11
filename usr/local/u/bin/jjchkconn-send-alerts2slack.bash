@@ -34,19 +34,19 @@ then
    if [ ! -d ${uUserHome} ];
    then
       echo "$0: HOME Directory ${uUserHome} does not exist.  Abort..."
-      exit 1
+      exit 64
    fi
 else
    echo -e "\n$0: getent exit code = ${uGetEntStatus}"
    echo -e "\n$0: cut exit code = ${uCutStatus}"
    echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
-   exit 2
+   exit 65
 fi
 
 if [ $# -ne 2 ]; then
    echo "Abort.  The number of arguments must be strictiy two (2).";
    echo "	 If passing arguments with whitespaces enclose text in quotes.";
-   exit 3;
+   exit 66;
 fi
 
 uHomeDir=`getent passwd $uUser|cut -f6 -d:`
@@ -55,7 +55,7 @@ uIniFile="$uHomeDir/.config/jjchkconn-slack-alerts.ini"
 if [ ! -f "$uIniFile" ];
 then
    echo "Abort.  "$uIniFile" does not exist"
-   exit 4
+   exit 67
 fi
 
 ### In case attachments are desired use the following format:
@@ -68,7 +68,7 @@ then
    sh /usr/local/u/bin/sendmsg2Slack.sh "${uIniFile}" "${2}"
    if [ $? -ne 0 ]; then
       echo "$0.  Failed to send message to Slack.  Abort..."
-      exit 5
+      exit 68
    else
       echo "$0.  Message sent to slack.com.  Success..."
    fi
