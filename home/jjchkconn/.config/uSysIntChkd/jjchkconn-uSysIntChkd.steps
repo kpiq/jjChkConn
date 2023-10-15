@@ -45,7 +45,6 @@ nu gps.layer42.net 123
 w http://speedtest.opticaltel.com:8080
 dgl
 nu 8.8.8.8 53
-nu ntp-s1.cise.ufl.edu 123
 dgl
 w http://208.89.99.246:8080
 nu 24.138.252.19 53

@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.3 : This version fixes the logic to calculate the amount of seconds/minutes/hours that the service as down or degraded.
+jjchkconn v1.3.4 : This version replaces hard-coded values for the number of pings to be used for Type2 steps, and for the maximum latency acceptable for local gateway checks.
 
 About
 

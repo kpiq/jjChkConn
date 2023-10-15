@@ -361,7 +361,7 @@ function fReadStepsAndCheck()
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
        if [ ${uPingCount} -lt 3 ]; then
-          uPingCount=3
+          uPingCount=$uNumType2Pings
        fi
        # FOR THIS OPERATION DON'T APPEND, OVERWRITE THE CURRENT STEP OUTPUT
        ping -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
@@ -375,15 +375,15 @@ function fReadStepsAndCheck()
        ;;
      dgl) # Check local host's Default Gateway. Accept multiple gw's.
        uSite=`echo $line|awk '{print $2}'`;
-       uAcceptableLatency=1;
+       uAcceptableLatency=$uMaxLatencyDGL;
        uAcceptableLoss=0;
-       if [ ${uPingCount} -lt 3 ]; then
-          uPingCount=3
+       if [ ${uPingCount} -lt $uMaxLatencyDGL ]; then
+          uPingCount=$uNumType2Pings
        fi
        # Deal with the possibility of multiple Default Gateways.
        # No site argument in steps_file. Derive it using `ip route`.
        readarray -t uSiteArray < <(ip route | awk '/^default/ {print $3}')
-       echo "There are ${#uSiteArray[@]} default gateways on this system." >> $uOut
+       echo "There are ${#uSiteArray[@]} default gateways on this system." |tee $uCurrOut >> $uOut
        if [ "${#uSiteArray[@]}" -lt 1 ]; then
           echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  System does not have a default route." >> $uOut
        fi
@@ -405,7 +405,7 @@ function fReadStepsAndCheck()
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
        if [ ${uPingCount} -lt 3 ]; then
-          uPingCount=3
+          uPingCount=$uNumType2Pings
        fi
        # FOR THIS OPERATION DON'T APPEND, OVERWRITE THE CURRENT STEP OUTPUT
        ping -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
