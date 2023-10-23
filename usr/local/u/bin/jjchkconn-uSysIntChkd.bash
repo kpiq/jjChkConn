@@ -314,6 +314,9 @@ function fReadStepsAndCheck()
    case ${uType} in
      w) # wget
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} |tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
@@ -324,6 +327,9 @@ function fReadStepsAndCheck()
        ;;
      p) # ping, without checking packet loss or latency
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        ping -c ${uPingCount} -s ${uPingSize} ${uSite} |tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
@@ -334,6 +340,9 @@ function fReadStepsAndCheck()
        ;;
      nu) # netcat for UDP port
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uPortNum=${uAcceptableLatency}
        nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} |tee $uCurrOut >> $uOut
@@ -346,6 +355,9 @@ function fReadStepsAndCheck()
        ;;
      nt) # netcat for TCP port
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uPortNum=${uAcceptableLatency}
        nc -4 -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} |tee $uCurrOut >> $uOut
@@ -358,6 +370,9 @@ function fReadStepsAndCheck()
        ;;
      dgn) # Check connection to Network Default Gateway
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
        if [ ${uPingCount} -lt 3 ]; then
@@ -375,6 +390,8 @@ function fReadStepsAndCheck()
        ;;
      dgl) # Check local host's Default Gateway. Accept multiple gw's.
        uSite=`echo $line|awk '{print $2}'`;
+       ### THERE IS NO NEED TO CONVERT FQDN TO IP HERE.  THE INPUT RECORD
+       ### DOES NOT CONTAIN HOST, IP, OR URL, JUST THE RECORD TYPE.
        uAcceptableLatency=$uMaxLatencyDGL;
        uAcceptableLoss=0;
        if [ ${uPingCount} -lt $uMaxLatencyDGL ]; then
@@ -402,6 +419,9 @@ function fReadStepsAndCheck()
        ;;
      tr) # Check connection to transit node 
        uSite=`echo $line|awk '{print $2}'`;
+       # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
+       # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
+       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
        if [ ${uPingCount} -lt 3 ]; then

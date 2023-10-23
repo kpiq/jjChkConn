@@ -70,11 +70,13 @@ then
    do
      sleep 1
    done
-   chown jjchkconn:jjchkconn ./usr/local/u/bin/jjchk*
-   chown jjchkconn:jjchkconn ./usr/local/u/bin/sendmsg2Slack.sh
-   chmod -R  775 ./usr/local/u/bin/jjchk*
-   chmod -R  775 ./usr/local/u/bin/sendmsg2Slack.sh
 fi
+chown jjchkconn:jjchkconn ./usr/local/u/bin/jjchk*
+chown jjchkconn:jjchkconn ./usr/local/u/bin/sendmsg2Slack.sh
+chown jjchkconn:jjchkconn ./usr/local/u/bin/url_fqdn2ip.bash
+chmod -R  550 ./usr/local/u/bin/jjchk*
+chmod -R  550 ./usr/local/u/bin/sendmsg2Slack.sh
+chmod -R  550 ./usr/local/u/bin/url_fqdn2ip.bash
 
 ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
 

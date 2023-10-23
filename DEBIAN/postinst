@@ -10,7 +10,11 @@ then
    exit 1
 else
    chown -R jjchkconn:jjchkconn ./usr/local/u/bin/jjchkconn*
+   chown -R jjchkconn:jjchkconn ./usr/local/u/bin/url_fqdn2ip.bash
+   chown -R jjchkconn:jjchkconn ./usr/local/u/bin/sendmsg2Slack.sh
    chmod -R  550 ./usr/local/u/bin/jjchkconn*
+   chmod -R  550 ./usr/local/u/bin/url_fqdn2ip.bash
+   chmod -R  550 ./usr/local/u/bin/sendmsg2Slack.sh
 fi
 
 chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd/*

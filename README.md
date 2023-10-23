@@ -1,10 +1,10 @@
 jjchkconn
 
-jjchkconn v1.3.4 : This version replaces hard-coded values for the number of pings to be used for Type2 steps, and for the maximum latency acceptable for local gateway checks.
+jjchkconn v1.3.5 : This version adds host/url to ip address name resolution before the actual connectivity test.  That reduces the latency figures of the test result and gives a more accurate result, removing name resolution from the equation.
 
 About
 
-jjchkconn is a set of customizable systemd units, ini files, and bash scripts that will monitor Internet connectivity and, upon failure, send alerts via a Slack channel after connectivity resumes.
+jjchkconn is a set of customizable systemd units, ini files, and bash scripts that will monitor Internet connectivity using IPv4 and, upon failure, send alerts via a Slack channel of your choice after connectivity resumes.
 
 Disclaimer
 
