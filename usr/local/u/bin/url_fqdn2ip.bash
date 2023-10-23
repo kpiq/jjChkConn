@@ -46,6 +46,12 @@ else
       uScheme=$(echo $uUrl | awk -F '://' '{print $1}')
       uFqdn=$(echo $uUrl | awk -F '://' '{print $2}' | awk -F '/' '{print $1}')
       uPath=$(echo $uUrl | awk -F '://' '{split($2,a,"/"); if (length(a)>1) {for (i=2;i<=length(a);i++) {if (i>2) printf("/"); printf("%s",a[i])}; print ""}}')
+
+      # extract the port number, if one exists
+      uPort=$(echo $uFqdn | awk -F ':' '{print $2}')
+
+      # remove the port number from the fqdn
+      uFqdn=$(echo $uFqdn | awk -F ':' '{print $1}')
       
       # Get the IP address of the FQDN
       uIp=$(host -4 $uFqdn | awk '/has address/ {print $4}')
@@ -57,8 +63,13 @@ else
           echo "$uMsgPfx : ERROR... Invalid IP address \"$uIp\" for FQDN $uFqdn.  Abort..."
           exit 95
       fi
+      # reassemble the URL with the port number
+      if [ -n "$uPort" ]; then
+         new_uUrl="$uScheme://$uIp:$uPort/$uPath"
+      else
+         new_uUrl="$uScheme://$uIp/$uPath"
+      fi
       # Create a new URL with the IP address and uPath
-      new_uUrl="$uScheme://$uIp/$uPath"
    fi
 fi
 
