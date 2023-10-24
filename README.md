@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.5 : This version adds host/url to ip address name resolution before the actual connectivity test.  That reduces the latency figures of the test result and gives a more accurate result, removing name resolution from the equation.
+jjchkconn v1.3.6 : Bug fixes.  Streamline code in fEvalResults to avoid sending duplicate notifications to Slack.
 
 About
 

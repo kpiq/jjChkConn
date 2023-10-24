@@ -14,7 +14,8 @@ set -E
 
 function ferror_handler 
 {
-   echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error on line ${BASH_LINENO}: Failed command: $(eval "${BASH_COMMAND}")"
+   echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error on line " \
+	"${BASH_LINENO}: Failed command: $(eval "${BASH_COMMAND}")"
 #   exit 64
 }
 
@@ -25,7 +26,8 @@ function fCleanup()
 {
    uRC=$?
    set -xv
-   echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error on line ${BASH_LINENO}. Failed command: $(eval "${BASH_COMMAND}")"
+   echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error on line " \
+	"${BASH_LINENO}. Failed command: $(eval "${BASH_COMMAND}")"
    set +xv
    echo `date +"%Y-%m-%d %H:%M:%S"`;
    case ${uRC} in
@@ -94,7 +96,8 @@ function fInit()
    ### Prefix of script being executed
    declare -g uIniname=`basename ${0:0:-5}`
    
-   exec &> ${uUserHome}/.config/uSysIntChkd/$(echo ${uIniname} | sed 's/\@//g').log
+   exec &> ${uUserHome}/.config/uSysIntChkd/$(echo ${uIniname} \
+	   | sed 's/\@//g').log
    
    if [[ ${uGetEntStatus} -eq 0 ]] && [[ ${uCutStatus} -eq 0 ]];
    then
@@ -108,7 +111,8 @@ function fInit()
    else
       echo -e "\n$0: getent exit code = ${uGetEntStatus}"
       echo -e "\n$0: cut exit code = ${uCutStatus}"
-      echo "$0: HOME Directory ${uUserHome} not properly configured for this user.  Abort..."
+      echo "$0: HOME Directory ${uUserHome} not properly configured for " \
+	   "this user.  Abort..."
       exit 67
    fi
 
@@ -252,18 +256,21 @@ function fEvalResults()
    declare -g uLossOrLatency=false
 
    # EVALUATE PACKET LOSS
-   uActualPktLoss=$(sed -n '/packets transmitted/p' $uTmpfile|awk '{print $6}'|tr -d "%")
+   uActualPktLoss=$(sed -n '/packets transmitted/p' $uTmpfile \
+	            | awk '{print $6}'|tr -d "%")
    if [ -z "${uActualPktLoss}" ];
    then
-      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  For $uSite, Packet information is not present.  Check for logic error or true anomaly."  >> $uOut
+      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  For $uSite, " \
+	   "Packet information is not present.  Check for logic error or " \
+	   "true anomaly."  >> $uOut
    else
       declare -i uActual=$(awk '{print int($uActualPktLoss)}' <<< "$uActualPktLoss")
       declare -i uAcceptable=$(awk '{print int($uAcceptableLoss)}' <<< "$uAcceptableLoss")
       if [ ${uActual} -gt ${uAcceptable} ];
       then
-	 echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Packet loss of ${uActual}% is unacceptable.   Acceptable average maximum is ${uAcceptable}%" |tee -a $uOut >> $uCurrOut
-	 fWait4GoodConnection;
-         fSendAlert;
+	 echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, " \
+		 "Packet loss of ${uActual}% is unacceptable.   Acceptable " \
+		 "average maximum is ${uAcceptable}%" |tee -a $uOut >> $uCurrOut
          uConnStat="PACKET LOSS"
 	 uLossOrLatency=true
       fi
@@ -273,24 +280,30 @@ function fEvalResults()
    uActualRTT=$(sed -n '/^rtt[[:space:]]*min/p' $uTmpfile|awk -F/ '{print $5}')
    if [ -z "${uActualRTT}" ];
    then
-      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  For $uSite, RTT information is not present.  Check for logic error or true anomaly."  >> $uOut
+      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  For $uSite, " \
+	   "RTT information is not present.  Check for logic error or true " \
+	   "anomaly."  >> $uOut
    else
       declare -i uActual=$(awk '{print int($uActualRTT)}' <<< "$uActualRTT")
       declare -i uAcceptable=$(awk '{print int($uAcceptableLatency)}' <<< "$uAcceptableLatency")
       if [ ${uActual} -gt ${uAcceptable} ];
       then
-	 echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, Latency is unacceptable: ${uActual}ms.   Acceptable average maximum is ${uAcceptable}ms." |tee -a $uOut >> $uCurrOut
-	 fWait4GoodConnection;
-         fSendAlert;
+	 echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: For $uSite, " \
+		 "Latency is unacceptable: ${uActual}ms.   Acceptable " \
+		 "average maximum is ${uAcceptable}ms." \
+		 | tee -a $uOut >> $uCurrOut
          uConnStat="HIGH LATENCY"
 	 uLossOrLatency=true
       fi
    fi
-   rm $uTmpfile
-   if [[ "$uLossOrLatency" == "false" ]];
+
+   if [[ "$uLossOrLatency" == "true" ]];
    then
-      uConnStat=ok
+      fWait4GoodConnection;
+      fSendAlert;
    fi
+   uConnStat=ok
+   rm $uTmpfile
 }
 
 function fReadOnly()
@@ -309,7 +322,8 @@ function fReadStepsAndCheck()
    ### Clear the Current step Output file.
    echo > $uCurrOut
 
-   echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Executing step ${step_number}"
+   echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Executing step " \
+	   "${step_number}"
    uType=`echo $line|awk '{print $1}'`;
    case ${uType} in
      w) # wget
@@ -317,7 +331,8 @@ function fReadStepsAndCheck()
        # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
        # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
-       wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} |tee $uCurrOut >> $uOut
+       wget -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} \
+	    | tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -330,7 +345,8 @@ function fReadStepsAndCheck()
        # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
        # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
-       ping -c ${uPingCount} -s ${uPingSize} ${uSite} |tee $uCurrOut >> $uOut
+       ping -n -c ${uPingCount} -s ${uPingSize} ${uSite} \
+	    | tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -345,7 +361,8 @@ function fReadStepsAndCheck()
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uPortNum=${uAcceptableLatency}
-       nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} |tee $uCurrOut >> $uOut
+       nc -4 -u -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} \
+	  | tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -360,7 +377,8 @@ function fReadStepsAndCheck()
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uPortNum=${uAcceptableLatency}
-       nc -4 -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} |tee $uCurrOut >> $uOut
+       nc -4 -v -z -w ${uWgetTimeout} ${uSite} ${uPortNum} \
+	  | tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -375,11 +393,11 @@ function fReadStepsAndCheck()
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
-       if [ ${uPingCount} -lt 3 ]; then
+       if [ ${uPingCount} -lt $uNumType2Pings ]; then
           uPingCount=$uNumType2Pings
        fi
        # FOR THIS OPERATION DON'T APPEND, OVERWRITE THE CURRENT STEP OUTPUT
-       ping -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
+       ping -n -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -394,20 +412,22 @@ function fReadStepsAndCheck()
        ### DOES NOT CONTAIN HOST, IP, OR URL, JUST THE RECORD TYPE.
        uAcceptableLatency=$uMaxLatencyDGL;
        uAcceptableLoss=0;
-       if [ ${uPingCount} -lt $uMaxLatencyDGL ]; then
+       if [ ${uPingCount} -lt $uNumType2Pings ]; then
           uPingCount=$uNumType2Pings
        fi
        # Deal with the possibility of multiple Default Gateways.
        # No site argument in steps_file. Derive it using `ip route`.
        readarray -t uSiteArray < <(ip route | awk '/^default/ {print $3}')
-       echo "There are ${#uSiteArray[@]} default gateways on this system." |tee $uCurrOut >> $uOut
+       echo "There are ${#uSiteArray[@]} default gateways on this system." \
+	    | tee $uCurrOut >> $uOut
        if [ "${#uSiteArray[@]}" -lt 1 ]; then
-          echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  System does not have a default route." >> $uOut
+          echo -e "\n$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error.  " \
+		  "System does not have a default route." >> $uOut
        fi
        for uSite in "${uSiteArray[@]}"
        do
           # FOR THIS OPERATION DON'T APPEND, OVERWRITE THE CURRENT STEP OUTPUT
-          ping -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
+          ping -n -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
           uConnRC=${PIPESTATUS[0]}
           if [ "$uConnRC" -ne 0 ]; then
              uConnStat=notok
@@ -424,11 +444,11 @@ function fReadStepsAndCheck()
        uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        uAcceptableLatency=`echo $line|awk '{print $3}'`;
        uAcceptableLoss=`echo $line|awk '{print $4}'`;
-       if [ ${uPingCount} -lt 3 ]; then
+       if [ ${uPingCount} -lt $uNumType2Pings ]; then
           uPingCount=$uNumType2Pings
        fi
        # FOR THIS OPERATION DON'T APPEND, OVERWRITE THE CURRENT STEP OUTPUT
-       ping -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
+       ping -n -c ${uPingCount} ${uSite} |tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}
        if [ "$uConnRC" -ne 0 ]; then
           uConnStat=notok
@@ -447,7 +467,9 @@ function fReadStepsAndCheck()
 function fWait4GoodConnection
 {
    ### When confirmed down, check for connectivity before issuing alert
-   echo "$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Error: $line failed.  Executing step ${step_number}.  Loss of connectivity is confirmed. `cat $uCurrOut`" >> $uOut
+   echo "$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Error: $line failed.  " \
+	"Executing step ${step_number}.  Loss of connectivity is confirmed. " \
+	"`cat $uCurrOut`" >> $uOut
    
    # fReadStepsAndCheck will overwrite a number of variables.
    # Save failed line information and messages before that happens.
@@ -471,21 +493,27 @@ function fWait4GoodConnection
    uConfirmedDownSecs=$((uEndCountingSeconds - uBeginCountingSeconds))
    uConfirmedDownMins=$(echo "scale=2; $uConfirmedDownSecs / 60" | bc)
    uConfirmedDownHrs=$(echo "scale=2; $uConfirmedDownMins / 60" | bc)
-   echo -e "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Connectivity Loss is confirmed.  Down/degraded time is: $uConfirmedDownSecs seconds ($uConfirmedDownMins minutes / $uConfirmedDownHrs hours)." |tee -a $uCurrOut $uMsgfile >> $uOut
+   echo -e "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Connectivity Loss is " \
+	   "confirmed.  Down/degraded time is: $uConfirmedDownSecs seconds " \
+	   "($uConfirmedDownMins minutes / $uConfirmedDownHrs hours)." \
+	   | tee -a $uCurrOut $uMsgfile >> $uOut
 }
 
 function fSendAlert()
 {
    ### Connectivity has returned.   Send the alert
-   echo -e "\n\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Getting ready to send alert to Slack" >> $uOut
+   echo -e "\n\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Getting ready to send " \
+	   "alert to Slack" >> $uOut
    sleep $uSleepAfterOK;
 
    source /usr/local/u/bin/jjchkconn-send-alerts2slack.bash ${uUser} "$0 Msg: Review this operation: $uSaveline. `cat $uMsgfile`"
    if [ "$?" -eq 0 ];
    then
-      echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Alert sent to Slack - success" >> $uOut
+      echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Alert sent to Slack " \
+	      "- success" >> $uOut
    else
-      echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Alert sent to Slack - failed" >> $uOut
+      echo -e "\n$uHost-`date +"%Y-%m-%d %H:%M:%S"`: $0 Alert sent to Slack " \
+	      "- failed" >> $uOut
    fi
 }
 
@@ -500,7 +528,8 @@ function fCategorizeuType()
            ;;
         *)
            return "Unknown"
-	   echo -e "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error in line ${BASH_LINENO}.  Unknown uType=$uType" >> $uOut
+	   echo -e "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0: Error in line " \
+		   "${BASH_LINENO}.  Unknown uType=$uType" >> $uOut
            ;;
    esac
 }
@@ -514,7 +543,8 @@ function fTestRC()
    if [[ "$uConnStat" != "ok" ]]; 
    then
       uLossSuspected=true
-      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Error: $line failed.  Loss of connectivity is possible.  `cat $uCurrOut`"
+      echo "$uHost - `date +"%Y-%m-%d %H:%M:%S"` $0 Error: $line failed.  " \
+	   "Loss of connectivity is possible.  `cat $uCurrOut`"
       ### Loss of connectivity is suspected. 
       ### Loop to confirm the loss.
       uCount=0

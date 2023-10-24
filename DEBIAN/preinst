@@ -71,18 +71,13 @@ then
      sleep 1
    done
 fi
-chown jjchkconn:jjchkconn ./usr/local/u/bin/jjchk*
-chown jjchkconn:jjchkconn ./usr/local/u/bin/sendmsg2Slack.sh
-chown jjchkconn:jjchkconn ./usr/local/u/bin/url_fqdn2ip.bash
-chmod -R  550 ./usr/local/u/bin/jjchk*
-chmod -R  550 ./usr/local/u/bin/sendmsg2Slack.sh
-chmod -R  550 ./usr/local/u/bin/url_fqdn2ip.bash
 
 ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
 
 if [ ! -s ${ALERTSINI} ];
 then
-   echo 'WebHook=https://hooks.slack.com/services/' > ${ALERTSINI}
+   echo 'ChannelID=
+BotToken=xoxb-'  > ${ALERTSINI}
 fi
 chown jjchkconn:jjchkconn ${ALERTSINI}
 chmod 700 ${ALERTSINI}
