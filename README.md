@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.6 : Bug fixes.  Streamline code in fEvalResults to avoid sending duplicate notifications to Slack.
+jjchkconn v1.3.7 : Fix script that converts URLs and hostnames to IP Addresses. Previously, when a host command resulted in multiple IP addresses the outcome was unexpected.  Now, the result of host is shuffled randomly and only the first IP address is picked.
 
 About
 

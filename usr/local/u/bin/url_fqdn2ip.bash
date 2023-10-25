@@ -29,7 +29,8 @@ if validate_ip "$uUrl"; then
 else
    if host -4 $uUrl 2>&1 > /dev/null ; then
       # $1 is a hostname
-      uIp=$(host -4 $uUrl | awk '/has address/ {print $4}')
+      # When host results in multiple IP addresses then shuffle them and use one
+      uIp=$(host -4 $uUrl | awk '/has address/ {print $4}' | shuf | head -n 1)
 
       # Test the ip address
       if validate_ip "$uIp"; then
@@ -54,7 +55,7 @@ else
       uFqdn=$(echo $uFqdn | awk -F ':' '{print $1}')
       
       # Get the IP address of the FQDN
-      uIp=$(host -4 $uFqdn | awk '/has address/ {print $4}')
+      uIp=$(host -4 $uFqdn | awk '/has address/ {print $4}' | shuf | head -n 1)
       
       # Test the ip address
       if validate_ip "$uIp"; then
