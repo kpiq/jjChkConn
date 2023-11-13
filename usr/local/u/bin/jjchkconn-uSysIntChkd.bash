@@ -330,7 +330,11 @@ function fReadStepsAndCheck()
        uSite=`echo $line|awk '{print $2}'`;
        # PERFORM NAME RESOLUTION FIRST SO THAT THE CONNECTIVITY TEST
        # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
-       uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
+       # DO NOT PERFORM NAME RESOLUTION ON HTTPS. THE CERTIFICATE VERIFICATION
+       # TENDS TO FAIL IF THE CERTIFICATE DOES NOT INCLUDE THE IP ADDRESS.
+       if [[ "${uSite:0:5}" != "https" ]]; then
+          uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
+       fi
        wget -4 -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} \
 	    | tee $uCurrOut >> $uOut
        uConnRC=${PIPESTATUS[0]}

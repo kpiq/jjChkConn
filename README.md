@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.7 : Fix script that converts URLs and hostnames to IP Addresses. Previously, when a host command resulted in multiple IP addresses the outcome was unexpected.  Now, the result of host is shuffled randomly and only the first IP address is picked.
+jjchkconn v1.3.8 : Exclude conversion of URLs secure transport (https) to IP Addresses.  Conversion of such URLs results in random (frequent) failures to verify the security Certificate because not all certificates include the IP address.
 
 About
 
