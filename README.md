@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.8 : Exclude conversion of URLs secure transport (https) to IP Addresses.  Conversion of such URLs results in random (frequent) failures to verify the security Certificate because not all certificates include the IP address.
+jjchkconn v1.3.9 - Fix DEBIAN postinst script due to permissions issues with files under .config directory.
 
 About
 
