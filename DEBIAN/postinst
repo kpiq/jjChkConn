@@ -17,9 +17,6 @@ else
    chmod -R  550 ./usr/local/u/bin/sendmsg2Slack.sh
 fi
 
-chown jjchkconn:jjchkconn ./home/jjchkconn/.config/uSysIntChkd/*
-chmod u+w ./home/jjchkconn/.config/uSysIntChkd/
-
 systemctl daemon-reload
 
 systemctl restart apparmor
@@ -34,16 +31,26 @@ EOF
 newaliases
 
 ALERTSINI=./home/jjchkconn/.config/jjchkconn-slack-alerts.ini
+while [[ ! -f ${ALERTSINI} ]]; 
+do
+  sleep 1
+done
 chown jjchkconn:jjchkconn ${ALERTSINI}
 chmod 700 ${ALERTSINI}
+
+uSysIntChkdDir=./home/jjchkconn/.config/uSysIntChkd/
+while [[ ! -d ${uSysIntChkdDir} ]]; 
+do
+  sleep 1
+done
+chown -R jjchkconn:jjchkconn ${uSysIntChkdDir}
+chmod -R u+w ${uSysIntChkdDir}
 
 systemctl enable jjchkconn-uSysIntChkd@jjchkconn.service  || true
 systemctl enable jjchkconn-alerts-send@jjchkconn.path || true
 
 nohup sh -c 'sleep 2; systemctl start jjchkconn-uSysIntChkd@jjchkconn.service' &
-nohup sh -c 'sleep 2; systemctl start  jjchkconn-alerts-send@jjchkconn.path' &
-
-systemctl status -a "jj*" |cat  || true
+nohup sh -c 'sleep 2; systemctl start  jjchkconn-alerts-send@jjchkconn.path; systemctl status -a "jj*" |cat  || true; ' &
 
 echo -e "\n\nREMEMBER TO CUSTOMIZE YOUR SLACK WEBHOOKS PARAMETER IN THE .INI FILE."
 echo -e "\nIT IS NOT CONFIGURED RIGHT NOW.\n"
