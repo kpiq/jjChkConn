@@ -23,8 +23,8 @@ systemctl restart apparmor
 
 # Append to /etc/aliases
 cat << EOF >> /etc/aliases
-jjchkconn: /home/jjchkconn/alerts/inbound-alerts
-alerts: /home/jjchkconn/alerts/inbound-alerts 
+jjchkconn: |/usr/local/u/bin/email-to-timestamped-file.bash
+alerts: |/usr/local/u/bin/email-to-timestamped-file.bash
 EOF
 
 # Update aliases database
