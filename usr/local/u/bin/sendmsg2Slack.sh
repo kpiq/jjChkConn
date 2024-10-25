@@ -1,37 +1,102 @@
-#!/bin/sh
+#!/bin/bash
+# Improved sendmsg2Slack.sh
+set -euo pipefail
 
-### Usage: script /home/username/.config/slack-<botname>.ini "text"
+readonly LOGGER="logger -t $(basename "$0")"
+log_info() { $LOGGER -p user.info "$*"; }
+log_error() { $LOGGER -p user.err "$*"; }
 
-echo "The number of arguments is: $#"
+# Temporary file handling
+declare -g TEMPFILES=()
+trap 'rm -f "${TEMPFILES[@]}"' EXIT
 
-if [ -f "${1}" ] && [ -s "${1}" ];
-then
-   . "${1}"
-   uLog=$(echo "${1}" | sed "s/\.[^.]*$/\.log/")
-   echo "\n${uLog}"
-else
-   echo -e "\n$0: File $1 does not exist.  Abort..."
-fi
+function create_temp() {
+    local tmp
+    tmp=$(mktemp) || exit 1
+    TEMPFILES+=("$tmp")
+    echo "$tmp"
+}
 
-if [ ! -n "${2}" ];
-then
-   echo "The text string (2nd argument) is empty"
-else
-   uText="${0}: "`hostname`"-"`date`"   ${2}"
-fi
+function validate_config() {
+    local config_file=$1
+    local required_vars=("ChannelID" "BotToken")
+    
+    if [[ ! -f "$config_file" ]] || [[ ! -s "$config_file" ]]; then
+        log_error "Config file '$config_file' does not exist or is empty"
+        return 1
+    }
+    
+    # Source config in subshell to avoid polluting environment
+    (
+        . "$config_file"
+        for var in "${required_vars[@]}"; do
+            if [[ -z "${!var:-}" ]]; then
+                log_error "Required variable $var is not set in config"
+                return 1
+            fi
+        done
+    )
+}
 
-curl -X POST -F channel=${ChannelID} -F text="${uText}" https://slack.com/api/chat.postMessage -H "Authorization: Bearer ${BotToken}" 2>&1 > ${uLog}
+function send_slack_message() {
+    local config_file=$1
+    local message=$2
+    local debug=${3:-false}
+    
+    local log_file
+    log_file=$(create_temp)
+    
+    # Source config file
+    . "$config_file"
+    
+    local formatted_message
+    formatted_message="$(basename "$0"): $(hostname)-$(date): $message"
+    
+    # Use --fail to make curl exit with non-zero on HTTP errors
+    if ! curl --fail -X POST \
+        -F "channel=${ChannelID}" \
+        -F "text=${formatted_message}" \
+        -H "Authorization: Bearer ${BotToken}" \
+        https://slack.com/api/chat.postMessage \
+        2>&1 > "$log_file"; then
+        
+        log_error "Failed to send message to Slack"
+        cat "$log_file" >&2
+        return 1
+    fi
+    
+    if [[ "$debug" == "true" ]]; then
+        log_info "Debug output from Slack API:"
+        cat "$log_file"
+    fi
+    
+    return 0
+}
 
-if [ $? -ne 0 ]; then
-   echo "$0.  curl Failed.  Abort..."
-   cat ${uLog}
-   exit 1
-fi
+function main() {
+    if [[ $# -lt 2 ]]; then
+        log_error "Usage: $0 <config_file> <message> [debug]"
+        exit 1
+    fi
+    
+    local config_file=$1
+    local message=$2
+    local debug=${3:-false}
+    
+    if ! validate_config "$config_file"; then
+        exit 1
+    fi
+    
+    if [[ -z "$message" ]]; then
+        log_error "Message cannot be empty"
+        exit 1
+    fi
+    
+    if ! send_slack_message "$config_file" "$message" "$debug"; then
+        exit 1
+    fi
+    
+    log_info "Message sent successfully"
+}
 
-if [ -n "${3}" ] && [ -f "${uLog}" ];
-then
-   echo -e "\nDebug on.  Logfile ${uLog} follows: "
-   cat ${uLog}
-fi
-
-echo -e "\nRC=$?"
+main "$@"

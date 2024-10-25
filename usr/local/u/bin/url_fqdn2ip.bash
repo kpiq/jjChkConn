@@ -1,78 +1,126 @@
 #!/bin/bash
+# Improved url_fqdn2ip.bash
+set -euo pipefail
 
-# Validate an IP address
+readonly LOGGER="logger -t $(basename "$0")"
+log_info() { $LOGGER -p user.info "$*"; }
+log_error() { $LOGGER -p user.err "$*"; }
+
+# DNS caching implementation
+declare -A DNS_CACHE
+DNS_CACHE_TTL=300  # 5 minutes
+
+function resolve_with_cache() {
+    local host=$1
+    local now
+    now=$(date +%s)
+    
+    if [[ -n "${DNS_CACHE[$host]:-}" ]]; then
+        local cached_time=${DNS_CACHE[$host]%%;*}
+        local cached_ip=${DNS_CACHE[$host]#*;}
+        
+        if (( now - cached_time < DNS_CACHE_TTL )); then
+            echo "$cached_ip"
+            return 0
+        fi
+    fi
+    
+    local ip
+    ip=$(host -4 "$host" | awk '/has address/ {print $4}' | shuf | head -n1)
+    DNS_CACHE[$host]="$now;$ip"
+    echo "$ip"
+}
+
 function validate_ip() {
-    local uIp=$1
-    if [[ $uIp =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-        OIFS=$IFS
-        IFS='.'
-        uIp=($uIp)
-        IFS=$OIFS
-        for i in "${uIp[@]}"; do
-            if ! [[ $i =~ ^[0-9]+$ ]] || (( $i < 0 || $i > 255 )); then
-                return 1
-            fi
-        done
-        return 0
+    local ip=$1
+    local ip_regex='^([0-9]{1,3}\.){3}[0-9]{1,3}$'
+    
+    if [[ ! $ip =~ $ip_regex ]]; then
+        return 1
+    fi
+    
+    local IFS='.' read -ra ADDR <<< "$ip"
+    for octet in "${ADDR[@]}"; do
+        if (( octet < 0 || octet > 255 )); then
+            return 1
+        fi
+    done
+    return 0
+}
+
+function parse_url() {
+    local url=$1
+    local -n result=$2  # nameref to pass results back
+    
+    # Extract components using more reliable parsing
+    if [[ $url =~ ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?$ ]]; then
+        result[scheme]=${BASH_REMATCH[2]:-}
+        local authority=${BASH_REMATCH[4]:-}
+        result[path]=${BASH_REMATCH[5]:-}
+        
+        # Parse authority (host:port)
+        if [[ $authority =~ ^([^:]+)(:([0-9]+))?$ ]]; then
+            result[host]=${BASH_REMATCH[1]}
+            result[port]=${BASH_REMATCH[3]:-}
+        fi
     else
+        log_error "Invalid URL format: $url"
         return 1
     fi
 }
 
-uMsgPfx="$(hostname) - $(date +'%Y/%m/%d @ %H:%M:%S') \"$0\"";
+function main() {
+    if [[ $# -ne 1 ]]; then
+        log_error "Usage: $0 <url_or_ip>"
+        exit 1
+    fi
+    
+    local url=$1
+    declare -A url_parts
+    
+    if validate_ip "$url"; then
+        echo "$url"
+        return 0
+    fi
+    
+    if [[ $url =~ ^[^:/]+$ ]]; then
+        # Simple hostname
+        local ip
+        ip=$(resolve_with_cache "$url")
+        if ! validate_ip "$ip"; then
+            log_error "Invalid IP address '$ip' resolved from hostname '$url'"
+            exit 1
+        fi
+        echo "$ip"
+        return 0
+    fi
+    
+    # Handle full URL
+    parse_url "$url" url_parts
+    
+    if [[ -z "${url_parts[host]:-}" ]]; then
+        log_error "Could not extract hostname from URL: $url"
+        exit 1
+    fi
+    
+    local ip
+    ip=$(resolve_with_cache "${url_parts[host]}")
+    
+    if ! validate_ip "$ip"; then
+        log_error "Invalid IP address '$ip' resolved from hostname '${url_parts[host]}'"
+        exit 1
+    fi
+    
+    # Reconstruct URL with IP
+    local new_url="${url_parts[scheme]}://$ip"
+    if [[ -n "${url_parts[port]:-}" ]]; then
+        new_url+=":${url_parts[port]}"
+    fi
+    if [[ -n "${url_parts[path]:-}" ]]; then
+        new_url+="${url_parts[path]}"
+    fi
+    
+    echo "$new_url"
+}
 
-# Get the URL as input
-uUrl=$1
-if validate_ip "$uUrl"; then
-   # $1 is already an ip address
-   new_uUrl="$uUrl"
-else
-   if host -4 $uUrl 2>&1 > /dev/null ; then
-      # $1 is a hostname
-      # When host results in multiple IP addresses then shuffle them and use one
-      uIp=$(host -4 $uUrl | awk '/has address/ {print $4}' | shuf | head -n 1)
-
-      # Test the ip address
-      if validate_ip "$uIp"; then
-          true;      #Valid IP address
-      else
-          echo "$uMsgPfx : ERROR... Invalid IP address \"$uIp\" for FQDN $uUrl.  Abort..."
-          exit 94
-      fi
-      # Create a new URL with the IP address and uPath
-      new_uUrl="$uIp"
-   else
-      # $1 is a url that has at least a scheme and fqdn
-      # Extract the Scheme, FQDN, and path from the URL
-      uScheme=$(echo $uUrl | awk -F '://' '{print $1}')
-      uFqdn=$(echo $uUrl | awk -F '://' '{print $2}' | awk -F '/' '{print $1}')
-      uPath=$(echo $uUrl | awk -F '://' '{split($2,a,"/"); if (length(a)>1) {for (i=2;i<=length(a);i++) {if (i>2) printf("/"); printf("%s",a[i])}; print ""}}')
-
-      # extract the port number, if one exists
-      uPort=$(echo $uFqdn | awk -F ':' '{print $2}')
-
-      # remove the port number from the fqdn
-      uFqdn=$(echo $uFqdn | awk -F ':' '{print $1}')
-      
-      # Get the IP address of the FQDN
-      uIp=$(host -4 $uFqdn | awk '/has address/ {print $4}' | shuf | head -n 1)
-      
-      # Test the ip address
-      if validate_ip "$uIp"; then
-          true;      #Valid IP address
-      else
-          echo "$uMsgPfx : ERROR... Invalid IP address \"$uIp\" for FQDN $uFqdn.  Abort..."
-          exit 95
-      fi
-      # reassemble the URL with the port number
-      if [ -n "$uPort" ]; then
-         new_uUrl="$uScheme://$uIp:$uPort/$uPath"
-      else
-         new_uUrl="$uScheme://$uIp/$uPath"
-      fi
-      # Create a new URL with the IP address and uPath
-   fi
-fi
-
-# Print the new URL
-echo $new_uUrl
+main "$@"
