@@ -1,6 +1,6 @@
 jjchkconn
 
-jjchkconn v1.3.9 - Fix DEBIAN postinst script due to permissions issues with files under .config directory.
+jjchkconn v1.3.10 - Fixed various logic errors, including improper return of text values from functions, loop condition errors, etc.
 
 About
 
