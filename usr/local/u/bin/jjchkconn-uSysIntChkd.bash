@@ -343,7 +343,7 @@ function fReadStepsAndCheck()
        # EXCLUDES THE TIME SPENT DOING NAME RESOLUTION.
        # DO NOT PERFORM NAME RESOLUTION ON HTTPS. THE CERTIFICATE VERIFICATION
        # TENDS TO FAIL IF THE CERTIFICATE DOES NOT INCLUDE THE IP ADDRESS.
-       if [[ "${uSite:0:5}" != "https" ]]; then
+       if [[ "${uSite:0:4}" != "http" ]]; then
           uSite=$(/usr/local/u/bin/url_fqdn2ip.bash $uSite)
        fi
        wget -4 -t ${uWgetTries} -T ${uWgetTimeout} -O - ${uSite} \
